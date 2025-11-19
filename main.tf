@@ -1,3 +1,8 @@
+provider "google" {
+  project     = "CalmMyStreet"
+  region      = "us-west1"
+}
+
 terraform {
   backend "gcs" {
     bucket  = "calmmystreet-terraform"
