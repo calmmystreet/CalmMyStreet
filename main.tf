@@ -16,7 +16,7 @@ variable "suffix" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name          = "calmmystreet-${suffix}"
+  name          = "calmmystreet-${var.suffix}"
   location      = "US"
   storage_class = "STANDARD"
   website {
