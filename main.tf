@@ -1,3 +1,10 @@
+terraform {
+  backend "gcs" {
+    bucket  = "calmmystreet-terraform"
+    prefix  = "terraform/state"
+  }
+}
+
 variable "suffix" {
   type    = string
   default = "main"
