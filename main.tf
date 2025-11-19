@@ -1,12 +1,12 @@
 provider "google" {
-  project     = "CalmMyStreet"
-  region      = "us-west1"
+  project = "CalmMyStreet"
+  region  = "us-west1"
 }
 
 terraform {
   backend "gcs" {
-    bucket  = "calmmystreet-terraform"
-    prefix  = "terraform/state"
+    bucket = "calmmystreet-terraform"
+    prefix = "terraform/state"
   }
 }
 
@@ -16,12 +16,12 @@ variable "suffix" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name                        = "calmmystreet-${suffix}"
-  location                    = "US"
-  storage_class               = "STANDARD"
+  name          = "calmmystreet-${suffix}"
+  location      = "US"
+  storage_class = "STANDARD"
   website {
-    main_page_suffix          = "index.html"
-    not_found_page            = "404.html"
+    main_page_suffix = "index.html"
+    not_found_page   = "404.html"
   }
   uniform_bucket_level_access = true
 }
