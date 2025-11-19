@@ -1,5 +1,5 @@
 variable "suffix" {
-  type    = "string"
+  type    = string
   default = "main"
 }
 
