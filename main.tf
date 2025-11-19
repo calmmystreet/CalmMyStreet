@@ -19,6 +19,8 @@ resource "google_storage_bucket" "bucket" {
   name          = "calmmystreet-${var.suffix}"
   location      = "US"
   storage_class = "STANDARD"
+  location      = "us-west1"
+  storage_class = "REGIONAL"
   website {
     main_page_suffix = "index.html"
     not_found_page   = "404.html"
