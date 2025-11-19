@@ -28,7 +28,7 @@ resource "google_storage_bucket" "bucket" {
 
 resource "google_storage_bucket_iam_member" "bucket_member" {
   provider = google
-  bucket   = "calmmystreet-${suffix}"
+  bucket   = "calmmystreet-${var.suffix}"
   role     = "roles/storage.objectViewer"
   member   = "allUsers"
 }
