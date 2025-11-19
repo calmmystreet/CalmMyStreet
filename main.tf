@@ -27,9 +27,9 @@ resource "google_storage_bucket" "bucket" {
 }
 
 resource "google_storage_bucket_iam_member" "bucket_member" {
-  bucket   = "calmmystreet-${var.suffix}"
-  role     = "roles/storage.objectViewer"
-  member   = "allUsers"
+  bucket = "calmmystreet-${var.suffix}"
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
 }
 
 resource "google_compute_backend_bucket" "bucket_backend" {
