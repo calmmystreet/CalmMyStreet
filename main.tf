@@ -38,7 +38,7 @@ resource "google_compute_backend_bucket" "bucket_backend" {
 }
 
 resource "google_compute_url_map" "http_redirect" {
-  defaultUrlRedirect {
+  default_url_redirect {
     httpsRedirect        = true
     redirectResponseCode = "MOVED_PERMANENTLY_DEFAULT"
   }
