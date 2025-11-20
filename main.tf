@@ -40,7 +40,7 @@ resource "google_compute_backend_bucket" "bucket_backend" {
 resource "google_compute_url_map" "http_redirect" {
   default_url_redirect {
     https_redirect         = true
-        strip_query    = false
+    strip_query            = false
     redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
   }
   name = "calmmystreet-${var.suffix}-redirect"
