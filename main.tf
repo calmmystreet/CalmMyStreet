@@ -36,3 +36,16 @@ resource "google_compute_backend_bucket" "bucket_backend" {
   name        = "calmmystreet-${var.suffix}-bucket-backend"
   bucket_name = google_storage_bucket.bucket.name
 }
+
+resource "google_compute_url_map" "http_redirect" {
+  defaultUrlRedirect {
+    httpsRedirect        = true
+    redirectResponseCode = "MOVED_PERMANENTLY_DEFAULT"
+  }
+  name = "calmmystreet-${var.suffix}-redirect"
+}
+
+resource "google_compute_target_http_proxy" "target_http_proxy" {
+  name    = "calmmystreet-${var.suffix}-target-proxy"
+  url_map = google_compute_url_map.http_redirect.id
+}
