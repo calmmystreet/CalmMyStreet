@@ -8,6 +8,11 @@ variable "domain" {
   default = "calmmystreet.com"
 }
 
+variable "dnszone" {
+  type    = string
+  default = "calmmystreet-com"
+}
+
 provider "google" {
   project = "calmmystreet"
   region  = "us-west1"
@@ -20,6 +25,7 @@ terraform {
   }
 }
 
+### BUCKET ###
 resource "google_storage_bucket" "bucket" {
   name          = "calmmystreet-${var.suffix}"
   location      = "us-west1"
@@ -42,6 +48,7 @@ resource "google_compute_backend_bucket" "bucket_backend" {
   bucket_name = google_storage_bucket.bucket.name
 }
 
+### TRAFFIC ROUTING ###
 resource "google_compute_url_map" "lb_redirect" {
   default_url_redirect {
     https_redirect         = true
@@ -59,15 +66,6 @@ resource "google_compute_url_map" "lb" {
 resource "google_compute_target_http_proxy" "target_http_proxy" {
   name    = "calmmystreet-${var.suffix}-target-proxy"
   url_map = google_compute_url_map.lb_redirect.id
-}
-
-resource "google_compute_managed_ssl_certificate" "cert" {
-  name = "calmmystreet-${var.suffix}-cert"
-  managed {
-    domains = [
-      "${var.domain}"
-    ]
-  }
 }
 
 resource "google_compute_target_https_proxy" "target_https_proxy" {
@@ -94,6 +92,28 @@ resource "google_compute_global_forwarding_rule" "https" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
+### NETWORKING ###
 resource "google_compute_global_address" "ip" {
   name = "calmmystreet-${var.suffix}-ip"
+}
+
+resource "google_compute_managed_ssl_certificate" "cert" {
+  name = "calmmystreet-${var.suffix}-cert"
+  managed {
+    domains = [
+      "${var.domain}"
+    ]
+  }
+}
+
+resource "google_dns_record_set" "dns" {
+  managed_zone = var.dnszone
+  name         = "${var.domain}."
+  type         = "A"
+  routing_policy {
+    wrr {
+      weight  = 1
+      rrdatas = [google_compute_global_address.ip.id]
+    }
+  }
 }
