@@ -84,6 +84,7 @@ resource "google_compute_global_forwarding_rule" "http" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
+
 resource "google_compute_global_forwarding_rule" "https" {
   name                  = "calmmystreet-${var.suffix}"
   target                = google_compute_target_https_proxy.target_https_proxy.self_link
@@ -92,9 +93,31 @@ resource "google_compute_global_forwarding_rule" "https" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
+resource "google_compute_global_forwarding_rule" "http_ipv6" {
+  name                  = "calmmystreet-${var.suffix}-forwarding-rule-ipv6"
+  target                = google_compute_target_http_proxy.target_http_proxy.self_link
+  ip_address            = google_compute_global_address.ipv6.id
+  port_range            = 80
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+}
+
+resource "google_compute_global_forwarding_rule" "https_ipv6" {
+  name                  = "calmmystreet-${var.suffix}-ipv6"
+  target                = google_compute_target_https_proxy.target_https_proxy.self_link
+  ip_address            = google_compute_global_address.ipv6.id
+  port_range            = 443
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+}
+
 ### NETWORKING ###
 resource "google_compute_global_address" "ip" {
-  name = "calmmystreet-${var.suffix}-ip"
+  name       = "calmmystreet-${var.suffix}-ip"
+  ip_version = "IPV4"
+}
+
+resource "google_compute_global_address" "ipv6" {
+  name       = "calmmystreet-${var.suffix}-ipv6"
+  ip_version = "IPV6"
 }
 
 resource "google_compute_managed_ssl_certificate" "cert" {
