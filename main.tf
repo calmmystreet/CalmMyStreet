@@ -110,6 +110,7 @@ resource "google_dns_record_set" "dns" {
   managed_zone = var.dnszone
   name         = "${var.domain}."
   type         = "A"
+  ttl          = 21600
   routing_policy {
     wrr {
       weight  = 1
