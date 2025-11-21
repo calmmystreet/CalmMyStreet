@@ -113,7 +113,7 @@ resource "google_dns_record_set" "dns" {
   routing_policy {
     wrr {
       weight  = 1
-      rrdatas = [google_compute_global_address.ip.id]
+      rrdatas = [google_compute_global_address.ip.address]
     }
   }
 }
