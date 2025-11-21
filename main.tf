@@ -102,12 +102,12 @@ resource "google_compute_global_forwarding_rule" "https" {
 
 ### NETWORKING ###
 resource "google_compute_global_address" "ip" {
-  name = "calmmystreet-${var.suffix}-ip"
+  name       = "calmmystreet-${var.suffix}-ip"
   ip_version = "IPV4"
 }
 
 resource "google_compute_global_address" "ipv6" {
-  name = "calmmystreet-${var.suffix}-ipv6"
+  name       = "calmmystreet-${var.suffix}-ipv6"
   ip_version = "IPV6"
 }
 
