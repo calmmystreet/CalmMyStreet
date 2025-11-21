@@ -140,7 +140,7 @@ resource "google_dns_record_set" "dns" {
   }
 }
 
-resource "google_dns_record_set" "dns" {
+resource "google_dns_record_set" "dnsv6" {
   managed_zone = var.dnszone
   name         = "${var.domain}."
   type         = "AAAA"
