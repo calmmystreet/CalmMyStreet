@@ -108,7 +108,7 @@ resource "google_compute_managed_ssl_certificate" "cert" {
 
 resource "google_dns_record_set" "dns" {
   managed_zone = var.dnszone
-  name         = "calmmystreet-${var.suffix}-dns"
+  name         = "${var.domain}."
   type         = "A"
   routing_policy {
     wrr {
