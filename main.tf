@@ -47,7 +47,7 @@ resource "google_compute_url_map" "http_redirect" {
 }
 
 resource "google_compute_url_map" "https_proxy" {
-  default_service = google_compute_backend_bucket.backend_bucket.id
+  default_service = google_compute_backend_bucket.bucket_backend.id
   name            = "calmmystreet-${var.suffix}-proxy"
 }
 
