@@ -9,7 +9,7 @@ variable "domain" {
 }
 
 variable "dnszone" {
-  type = string
+  type    = string
   default = "calmmystreet-com"
 }
 
@@ -107,12 +107,12 @@ resource "google_compute_managed_ssl_certificate" "cert" {
 }
 
 resource "google_dns_record_set" "dns" {
-  managed_zone = "${var.dnszone}"
-  name = "calmmystreet-${var.suffix}-dns"
-  type = "A"
+  managed_zone = var.dnszone
+  name         = "calmmystreet-${var.suffix}-dns"
+  type         = "A"
   routing_policy {
     wwr {
-      weight = 1
+      weight  = 1
       rrdatas = [google_compute_global_address.ip.id]
     }
   }
