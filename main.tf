@@ -84,7 +84,7 @@ resource "google_compute_global_forwarding_rule" "http" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
-resource "google_compute_global_forwarding_rule" "http" {
+resource "google_compute_global_forwarding_rule" "http_ipv6" {
   name                  = "calmmystreet-${var.suffix}-forwarding-rule-ipv6"
   target                = google_compute_target_http_proxy.target_http_proxy.self_link
   ip_address            = google_compute_global_address.ipv6.id
@@ -92,7 +92,7 @@ resource "google_compute_global_forwarding_rule" "http" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
-resource "google_compute_global_forwarding_rule" "https" {
+resource "google_compute_global_forwarding_rule" "https_ipv6" {
   name                  = "calmmystreet-${var.suffix}-ipv6"
   target                = google_compute_target_https_proxy.target_https_proxy.self_link
   ip_address            = google_compute_global_address.ipv6.id
