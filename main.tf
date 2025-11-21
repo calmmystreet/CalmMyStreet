@@ -37,35 +37,35 @@ resource "google_compute_backend_bucket" "bucket_backend" {
   bucket_name = google_storage_bucket.bucket.name
 }
 
-resource "google_compute_url_map" "http_redirect" {
+resource "google_compute_url_map" "lb_redirect" {
   default_url_redirect {
     https_redirect         = true
     strip_query            = false
     redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
   }
-  name = "calmmystreet-${var.suffix}-lb"
+  name = "calmmystreet-${var.suffix}-lb-redirect"
 }
 
-resource "google_compute_url_map" "https_proxy" {
+resource "google_compute_url_map" "lb" {
   default_service = google_compute_backend_bucket.bucket_backend.id
   name            = "calmmystreet-${var.suffix}-lb"
 }
 
 resource "google_compute_target_http_proxy" "target_http_proxy" {
   name    = "calmmystreet-${var.suffix}-target-proxy"
-  url_map = google_compute_url_map.http_redirect.id
+  url_map = google_compute_url_map.lb_redirect.id
 }
 
 resource "google_compute_target_https_proxy" "target_https_proxy" {
   name    = "calmmystreet-${var.suffix}-target-proxy"
-  url_map = google_compute_url_map.https_proxy.id
+  url_map = google_compute_url_map.lb.id
   ssl_certificates = [
     "projects/calmmystreet/global/sslCertificates/calmmystreet" # external dependency!
   ]
 }
 
 resource "google_compute_global_forwarding_rule" "http" {
-  name                  = "calmmystreet-${var.suffix}-http-forwarding"
+  name                  = "calmmystreet-${var.suffix}-forwarding-rule"
   target                = google_compute_target_http_proxy.target_http_proxy.self_link
   ip_address            = google_compute_global_address.ip.id
   port_range            = 80
@@ -73,7 +73,7 @@ resource "google_compute_global_forwarding_rule" "http" {
 }
 
 resource "google_compute_global_forwarding_rule" "https" {
-  name                  = "calmmystreet-${var.suffix}-https-forwarding"
+  name                  = "calmmystreet-${var.suffix}"
   target                = google_compute_target_https_proxy.target_https_proxy.self_link
   ip_address            = google_compute_global_address.ip.id
   port_range            = 443
