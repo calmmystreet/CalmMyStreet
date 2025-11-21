@@ -111,7 +111,7 @@ resource "google_dns_record_set" "dns" {
   name         = "calmmystreet-${var.suffix}-dns"
   type         = "A"
   routing_policy {
-    wwr {
+    wrr {
       weight  = 1
       rrdatas = [google_compute_global_address.ip.id]
     }
