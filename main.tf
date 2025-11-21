@@ -1,3 +1,13 @@
+variable "suffix" {
+  type    = string
+  default = "main"
+}
+
+variable "domain" {
+  type    = string
+  default = "calmmystreet.com"
+}
+
 provider "google" {
   project = "calmmystreet"
   region  = "us-west1"
@@ -8,11 +18,6 @@ terraform {
     bucket = "calmmystreet-terraform"
     prefix = "terraform/state"
   }
-}
-
-variable "suffix" {
-  type    = string
-  default = "main"
 }
 
 resource "google_storage_bucket" "bucket" {
@@ -54,6 +59,15 @@ resource "google_compute_url_map" "lb" {
 resource "google_compute_target_http_proxy" "target_http_proxy" {
   name    = "calmmystreet-${var.suffix}-target-proxy"
   url_map = google_compute_url_map.lb_redirect.id
+}
+
+resource "google_compute_managed_ssl_certificate" "cert" {
+  name = "calmmystreet-${var.suffix}-cert"
+  managed {
+    domains = [
+      "${var.domain}"
+    ]
+  }
 }
 
 resource "google_compute_target_https_proxy" "target_https_proxy" {
