@@ -43,16 +43,16 @@ resource "google_compute_url_map" "http_redirect" {
     strip_query            = false
     redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
   }
-  name = "calmmystreet-${var.suffix}-redirect"
+  name = "calmmystreet-${var.suffix}-lb"
 }
 
 resource "google_compute_url_map" "https_proxy" {
   default_service = google_compute_backend_bucket.bucket_backend.id
-  name            = "calmmystreet-${var.suffix}-proxy"
+  name            = "calmmystreet-${var.suffix}-lb"
 }
 
 resource "google_compute_target_http_proxy" "target_http_proxy" {
-  name    = "calmmystreet-${var.suffix}-target-http-redirect"
+  name    = "calmmystreet-${var.suffix}-target-proxy"
   url_map = google_compute_url_map.http_redirect.id
 }
 
