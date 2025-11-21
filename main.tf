@@ -74,7 +74,7 @@ resource "google_compute_target_https_proxy" "target_https_proxy" {
   name    = "calmmystreet-${var.suffix}-target-proxy"
   url_map = google_compute_url_map.lb.id
   ssl_certificates = [
-    "projects/calmmystreet/global/sslCertificates/calmmystreet" # external dependency!
+    google_compute_managed_ssl_certificate.cert.id
   ]
 }
 
