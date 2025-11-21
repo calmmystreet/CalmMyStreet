@@ -123,9 +123,7 @@ resource "google_compute_global_address" "ipv6" {
 resource "google_compute_managed_ssl_certificate" "cert" {
   name = "calmmystreet-${var.suffix}-cert"
   managed {
-    domains = [
-      "${var.domain}"
-    ]
+    domains = [var.domain]
   }
 }
 
@@ -138,6 +136,19 @@ resource "google_dns_record_set" "dns" {
     wrr {
       weight  = 1
       rrdatas = [google_compute_global_address.ip.address]
+    }
+  }
+}
+
+resource "google_dns_record_set" "dns" {
+  managed_zone = var.dnszone
+  name         = "${var.domain}."
+  type         = "AAAA"
+  ttl          = 21600
+  routing_policy {
+    wrr {
+      weight  = 1
+      rrdatas = [google_compute_global_address.ipv6.address]
     }
   }
 }
