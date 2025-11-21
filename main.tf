@@ -46,7 +46,40 @@ resource "google_compute_url_map" "http_redirect" {
   name = "calmmystreet-${var.suffix}-redirect"
 }
 
+resource "google_compute_url_map" "https_proxy" {
+  default_service = google_compute_backend_bucket.backend_bucket.id
+  name            = "calmmystreet-${var.suffix}-proxy"
+}
+
 resource "google_compute_target_http_proxy" "target_http_proxy" {
-  name    = "calmmystreet-${var.suffix}-target-proxy"
+  name    = "calmmystreet-${var.suffix}-target-http-redirect"
   url_map = google_compute_url_map.http_redirect.id
+}
+
+resource "google_compute_target_https_proxy" "target_https_proxy" {
+  name    = "calmmystreet-${var.suffix}-target-proxy"
+  url_map = google_compute_url_map.https_proxy.id
+  ssl_certificates = [
+    "projects/calmmystreet/global/sslCertificates/calmmystreet" # external dependency!
+  ]
+}
+
+resource "google_compute_global_forwarding_rule" "http" {
+  name                  = "calmmystreet-${var.suffix}-http-forwarding"
+  target                = google_compute_target_http_proxy.target_http_proxy.self_link
+  ip_address            = google_compute_global_address.ip.id
+  port_range            = 80
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+}
+
+resource "google_compute_global_forwarding_rule" "https" {
+  name                  = "calmmystreet-${var.suffix}-https-forwarding"
+  target                = google_compute_target_https_proxy.target_https_proxy.self_link
+  ip_address            = google_compute_global_address.ip.id
+  port_range            = 443
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+}
+
+resource "google_compute_global_address" "ip" {
+  name = "calmmystreet-${var.suffix}-ip"
 }
