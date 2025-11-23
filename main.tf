@@ -152,3 +152,11 @@ resource "google_dns_record_set" "dnsv6" {
     }
   }
 }
+
+### BUCKET CONTENT ###
+resource "google_storage_bucket_object" "index_html" {
+  name         = "index.html"
+  source       = "index.html"
+  content_type = "text/html"
+  bucket       = google_storage_bucket.bucket.id
+}
