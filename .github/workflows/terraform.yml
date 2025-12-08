@@ -74,6 +74,9 @@ jobs:
       - name: NPM Lint
         run: npm run lint
 
+      - name: Setup Playwright
+        run: npx playwright install
+
       - name: NPM Test
         run: npm run test
 
