@@ -121,11 +121,12 @@ resource "google_dns_record_set" "dns" {
 ### BUCKET CONTENT ###
 ## TODO: Swap content_type for a map or something
 resource "google_storage_bucket_object" "html" {
-  for_each     = fileset("./build", "**/*.html")
-  name         = each.value
-  source       = "./build/${each.value}"
-  content_type = "text/html"
-  bucket       = google_storage_bucket.bucket.id
+  for_each      = fileset("./build", "**/*.html")
+  name          = each.value
+  source        = "./build/${each.value}"
+  content_type  = "text/html"
+  cache_control = "no-cache"
+  bucket        = google_storage_bucket.bucket.id
 }
 
 resource "google_storage_bucket_object" "png" {
@@ -161,11 +162,12 @@ resource "google_storage_bucket_object" "js" {
 }
 
 resource "google_storage_bucket_object" "json" {
-  for_each     = fileset("./build", "**/*.json")
-  name         = each.value
-  source       = "./build/${each.value}"
-  content_type = "application/json"
-  bucket       = google_storage_bucket.bucket.id
+  for_each      = fileset("./build", "**/*.json")
+  name          = each.value
+  source        = "./build/${each.value}"
+  content_type  = "application/json"
+  cache_control = "no-cache"
+  bucket        = google_storage_bucket.bucket.id
 }
 
 resource "google_storage_bucket_object" "webmanifest" {
