@@ -10,7 +10,7 @@ const visitedStreets: Map<string, Feature | Promise<Feature>> = new Map();
 export async function onMount() {
 	if (!esriPromise) {
 		// lazy load the leaflet lib
-		esriPromise = Promise.resolve(window.L.esri);
+		esriPromise = import('esri-leaflet');
 	}
 }
 

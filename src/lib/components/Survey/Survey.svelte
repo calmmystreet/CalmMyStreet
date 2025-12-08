@@ -1,11 +1,15 @@
 <script lang="ts">
-	import type { Feature, Geometry, Position } from 'geojson';
+	import type { StyleFunction } from 'leaflet';
+	import type { Feature, Geometry, Position, LineString } from 'geojson';
+	import { type Props as Map_Props } from '../Map/Map.ts';
 	import { color, type FeatureAttrs } from '$lib/constants';
+
+	import MapComponent from '../Map/Map.svelte';
 	import Street from './Street.svelte';
 	import Arterial from './Arterial.svelte';
 	import YesNoNaw from './Selector/YesNoNaw.svelte';
 	import Selector from './Selector/Selector.svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 
 	interface Props {
 		oid: string;
@@ -17,24 +21,35 @@
 	let feature = $state() as Feature;
 	let midPoint = $state() as Position;
 	let featureProps = $state() as FeatureAttrs;
+	let featureError = $state() as Error;
 	let page = $state(0) as number;
 
 	let page1Class = $derived(!page || page === 0 ? 'contents' : 'hidden');
 	let page2Class = $derived(page === 1 ? 'contents' : 'hidden');
 	let page3Class = $derived(page === 2 ? 'contents' : 'hidden');
-	onMount(() => {
-		streets.onMount(); // make sure streets is loaded
+	const mapSetupFn: Map_Props['setup'] = (leaflet, map) => {
+		const mapLayer = leaflet
+			.geoJSON<LineString>(null, {
+				interactive: false,
+				style: generateLineStyle,
+			})
+			.addTo(map);
 		streets.getFeature(oid).then(
 			(f) => {
 				feature = f;
 				midPoint = findMidPoint(f.geometry);
 				featureProps = f.properties as unknown as FeatureAttrs;
+				mapLayer.addData(feature);
+				map.flyToBounds(mapLayer.getBounds().pad(4));
 			},
 			// ignores getFeature errors because SurveyHeader handles it
 			// and this component just doesn't render if we failed to find it
-			() => {}
+			(e) => {
+				console.log(`Caught error fetching feature`, e);
+				featureError = e as Error;
+			}
 		);
-	});
+	};
 	function findMidPoint(g: Geometry): Position {
 		switch (g.type) {
 			case 'Point':
@@ -45,6 +60,18 @@
 				throw new Error(`Unsupported shape type: ${g.type}`);
 		}
 	}
+	const generateLineStyle: StyleFunction = (f) => {
+		const attrs = f?.properties as FeatureAttrs;
+		let colorClass = color[1];
+		if (attrs && attrs.color) {
+			colorClass = attrs.color;
+		}
+		return {
+			color: colorClass.substring(4, 11),
+			weight: 10,
+			lineCap: 'round',
+		};
+	};
 	function completeForm(e: SubmitEvent) {
 		e.preventDefault();
 		// TODO: Serialize the form and submit it
@@ -55,6 +82,21 @@
 	}
 </script>
 
+<article class="max-w-prose prose-base lg:prose-xl text-white text-center">
+	{#if !featureError && !feature}
+		<h1>Loading...</h1>
+	{:else if feature}
+		<h1>Tell me about {featureProps.STNAME_ORD}</h1>
+	{:else}
+		<h1>
+			<span class="text-red-500">Error</span>: {featureError.message || 'Failed to find street'}
+		</h1>
+	{/if}
+</article>
+<MapComponent inert setup={mapSetupFn} class="h-60"></MapComponent>
+<a href="/" class="block w-full text-center {color[3]} py-2 rounded-b"
+	>&larr; Pick a different street</a
+>
 {#if feature}
 	<form method="POST" onsubmit={completeForm}>
 		<input name="page" type="hidden" value={page} />
