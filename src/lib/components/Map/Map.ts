@@ -16,11 +16,7 @@ export default new (class mapLib {
 	map: L.Map | undefined;
 	inert: boolean | undefined;
 	onMapMount = async (setup: Props['setup'], handlers: Props['handlers']) => {
-		this.leaflet = window.L;
-		if (this.leaflet === undefined) {
-			console.log('Failed to initialize map');
-			return;
-		}
+		this.leaflet = await import('leaflet');
 		this.map = this.leaflet
 			.map(this.mapEl, {
 				zoomControl: !this.inert,
@@ -42,7 +38,7 @@ export default new (class mapLib {
 			.addTo(this.map);
 
 		if (setup) {
-			setup(this.leaflet, this.map);
+			this.map.whenReady(() => setup(this.leaflet!, this.map!));
 		}
 		if (handlers) {
 			this.map.on(handlers);

@@ -26,6 +26,16 @@ export const setupFn: Map_Props['setup'] = (leaflet, newMap) => {
 	centerMarker = L.marker(map.getCenter(), {
 		riseOnHover: true,
 		draggable: true,
+		icon: L.icon({
+			iconUrl: '/marker-icon.png',
+			iconRetinaUrl: '/marker-icon-2x.png',
+			shadowUrl: '/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			tooltipAnchor: [16, -28],
+			shadowSize: [41, 41],
+		}),
 	})
 		.addTo(map)
 		.bindPopup(initialText)
