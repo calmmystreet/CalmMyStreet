@@ -84,7 +84,6 @@ resource "google_compute_global_forwarding_rule" "http" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
-
 resource "google_compute_global_forwarding_rule" "https" {
   name                  = "calmmystreet-${var.suffix}"
   target                = google_compute_target_https_proxy.target_https_proxy.self_link
@@ -93,31 +92,10 @@ resource "google_compute_global_forwarding_rule" "https" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
-resource "google_compute_global_forwarding_rule" "http_ipv6" {
-  name                  = "calmmystreet-${var.suffix}-forwarding-rule-ipv6"
-  target                = google_compute_target_http_proxy.target_http_proxy.self_link
-  ip_address            = google_compute_global_address.ipv6.id
-  port_range            = 80
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-}
-
-resource "google_compute_global_forwarding_rule" "https_ipv6" {
-  name                  = "calmmystreet-${var.suffix}-ipv6"
-  target                = google_compute_target_https_proxy.target_https_proxy.self_link
-  ip_address            = google_compute_global_address.ipv6.id
-  port_range            = 443
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-}
-
 ### NETWORKING ###
 resource "google_compute_global_address" "ip" {
   name       = "calmmystreet-${var.suffix}-ip"
   ip_version = "IPV4"
-}
-
-resource "google_compute_global_address" "ipv6" {
-  name       = "calmmystreet-${var.suffix}-ipv6"
-  ip_version = "IPV6"
 }
 
 resource "google_compute_managed_ssl_certificate" "cert" {
@@ -140,23 +118,68 @@ resource "google_dns_record_set" "dns" {
   }
 }
 
-resource "google_dns_record_set" "dnsv6" {
-  managed_zone = var.dnszone
-  name         = "${var.domain}."
-  type         = "AAAA"
-  ttl          = 21600
-  routing_policy {
-    wrr {
-      weight  = 1
-      rrdatas = [google_compute_global_address.ipv6.address]
-    }
-  }
+### BUCKET CONTENT ###
+## TODO: Swap content_type for a map or something
+resource "google_storage_bucket_object" "html" {
+  for_each     = fileset("./build", "**/*.html")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "text/html"
+  bucket       = google_storage_bucket.bucket.id
 }
 
-### BUCKET CONTENT ###
-resource "google_storage_bucket_object" "index_html" {
-  name         = "index.html"
-  source       = "index.html"
-  content_type = "text/html"
+resource "google_storage_bucket_object" "png" {
+  for_each     = fileset("./build", "**/*.png")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "image/png"
+  bucket       = google_storage_bucket.bucket.id
+}
+
+resource "google_storage_bucket_object" "ico" {
+  for_each     = fileset("./build", "**/*.ico")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "image/vnd.microsoft.icon"
+  bucket       = google_storage_bucket.bucket.id
+}
+
+resource "google_storage_bucket_object" "css" {
+  for_each     = fileset("./build", "**/*.css")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "text/css"
+  bucket       = google_storage_bucket.bucket.id
+}
+
+resource "google_storage_bucket_object" "js" {
+  for_each     = fileset("./build", "**/*.js")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "text/javascript"
+  bucket       = google_storage_bucket.bucket.id
+}
+
+resource "google_storage_bucket_object" "json" {
+  for_each     = fileset("./build", "**/*.json")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "application/json"
+  bucket       = google_storage_bucket.bucket.id
+}
+
+resource "google_storage_bucket_object" "webmanifest" {
+  for_each     = fileset("./build", "**/*.webmanifest")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "application/manifest+json"
+  bucket       = google_storage_bucket.bucket.id
+}
+
+resource "google_storage_bucket_object" "txt" {
+  for_each     = fileset("./build", "**/*.txt")
+  name         = each.value
+  source       = "./build/${each.value}"
+  content_type = "text/plain"
   bucket       = google_storage_bucket.bucket.id
 }
