@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type { StyleFunction } from 'leaflet';
-	import type { Feature, Geometry, Position, LineString } from 'geojson';
+	import type { Feature, Position, LineString } from 'geojson';
 	import { type Props as Map_Props } from '../Map/Map.ts';
 	import { color, type FeatureAttrs } from '$lib/constants';
 
@@ -10,6 +9,7 @@
 	import YesNoNaw from './Selector/YesNoNaw.svelte';
 	import Selector from './Selector/Selector.svelte';
 	import { getContext } from 'svelte';
+	import { findMidPoint, generateLineStyle } from './Survey.ts';
 
 	interface Props {
 		oid: string;
@@ -50,31 +50,12 @@
 			}
 		);
 	};
-	function findMidPoint(g: Geometry): Position {
-		switch (g.type) {
-			case 'Point':
-				return g.coordinates;
-			case 'LineString':
-				return g.coordinates[Math.floor(g.coordinates.length / 2)];
-			default:
-				throw new Error(`Unsupported shape type: ${g.type}`);
-		}
-	}
-	const generateLineStyle: StyleFunction = (f) => {
-		const attrs = f?.properties as FeatureAttrs;
-		let colorClass = color[1];
-		if (attrs && attrs.color) {
-			colorClass = attrs.color;
-		}
-		return {
-			color: colorClass.substring(4, 11),
-			weight: 10,
-			lineCap: 'round',
-		};
-	};
 	function completeForm(e: SubmitEvent) {
 		e.preventDefault();
-		// TODO: Serialize the form and submit it
+		const formData = new FormData(e.target as HTMLFormElement);
+		formData.entries().forEach((v) => {
+			console.log(v);
+		});
 		if (page === 0) {
 			alert('Form Submitted and would be saved, but your data has been lost');
 		}
