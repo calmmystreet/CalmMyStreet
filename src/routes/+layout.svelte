@@ -16,6 +16,17 @@
 	<link rel="icon" sizes="32x32" href="/favicon-32x32.png" />
 	<link rel="icon" sizes="48x48" href="/favicon.ico" />
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+	<meta property="og:title" content="Calm My Street" />
+	<meta property="og:image" content="/Icon.png" />
+	<meta property="og:type" content="website" />
+	<meta
+		name="description"
+		content="Our streets are for us. Report non-local traffic on our map to help create a safer, more livable neighborhood for you and your family."
+	/>
+	<meta
+		property="og:description"
+		content="Our streets are for us. Report non-local traffic on our map to help create a safer, more livable neighborhood for you and your family."
+	/>
 </svelte:head>
 
 <div class="min-h-screen pt-6 {color[0]} flex flex-col justify-center overflow-hidden lg:pt-12">
