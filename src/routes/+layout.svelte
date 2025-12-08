@@ -17,7 +17,7 @@
 	<link rel="icon" sizes="48x48" href="/favicon.ico" />
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 	<meta property="og:title" content="Calm My Street" />
-	<meta property="og:image" content="/Icon.png" />
+	<meta property="og:image" content="https://calmmystreet.com/Icon.png" />
 	<meta property="og:type" content="website" />
 	<meta
 		name="description"
