@@ -17,6 +17,7 @@
 		`There's cut through traffic from `,
 		`Cars speed down ${props.attrs.STNAME_ORD.toLowerCase()} `,
 		`It's hard to cross ${props.attrs.STNAME_ORD.toLowerCase()} because `,
+		`Cars are parked where it's not safe. They park `,
 	]}
 />
 <p>Is it a pattern? <YesNoNaw name="pattern" /></p>
