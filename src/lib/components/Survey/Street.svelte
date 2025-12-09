@@ -16,6 +16,7 @@
 	suggestions={[
 		`There's cut through traffic from `,
 		`Cars speed down ${props.attrs.STNAME_ORD.toLowerCase()} `,
+		`It's hard to cross ${props.attrs.STNAME_ORD.toLowerCase()} because `,
 	]}
 />
 <p>Is it a pattern? <YesNoNaw name="pattern" /></p>
