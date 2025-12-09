@@ -134,7 +134,7 @@
 				<label for="badusageroute">Where are drivers typically coming from and heading to?</label>
 				<textarea id="badusageroute" class="w-full h-15 text-black" name="badusageroute"></textarea>
 			{/if}
-			<label for="solution">How do you think we can prevent this?</label>
+			<label for="solution">How do you think we could change this?</label>
 			<textarea id="solution" class="w-full h-15 text-black" name="solution"></textarea>
 			<input
 				class="block w-full {color[1]} rounded"
