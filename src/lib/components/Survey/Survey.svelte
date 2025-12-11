@@ -116,7 +116,7 @@
 				<label for="email" class="block">Email</label>
 				<input
 					id="email"
-					class="text-black w-xl"
+					class="text-black w-full max-w-xl"
 					name="email"
 					type="text"
 					autocomplete="email"
