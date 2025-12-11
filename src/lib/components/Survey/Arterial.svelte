@@ -1,20 +1,29 @@
 <script lang="ts">
 	import type { Props } from './types';
 
-	import PromptingTextBox from './PromptingTextBox/PromptingTextBox.svelte';
 	import YesNoNaw from './Selector/YesNoNaw.svelte';
+	import PromptingDescription from './PromptingDescription/PromptingDescription.svelte';
 	let props: Props = $props();
 </script>
 
-{props.attrs.STNAME_ORD} is an Arterial
-<hr class="my-2" />
+<p class="my-1">
+	This road is designated for through traffic vehicles. We'd still like to hear your thoughts, but
+	getting cars off arterials like this can be more challenging.
+</p>
+<p class="my-1">
+	Arterials are a necessity for traffic to get around the city. However, they should not divide the
+	neighborhoods, and they still have to be safe for people to cross and navigate.
+</p>
+
 <input name="type" type="hidden" value="arterial" />
 
-<p>Do you think this road should be designated as an arterial?<YesNoNaw name="dedesignate" /></p>
+<!--TODO: add a popup definition for arterial?-->
+{#snippet dedesignatePrompt()}
+	Do you think this road should continue to be designated as an arterial?
+{/snippet}
+<YesNoNaw name="dedesignate" prompt={dedesignatePrompt} />
 
-<h2 class="text-large">Describe the problem</h2>
-<p class="text text-gray-400 px-2">This description will be public on the map!</p>
-<PromptingTextBox
+<PromptingDescription
 	id="description"
 	name="description"
 	suggestions={[

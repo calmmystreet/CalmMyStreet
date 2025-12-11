@@ -10,6 +10,7 @@
 	import Selector from './Selector/Selector.svelte';
 	import { getContext } from 'svelte';
 	import { findMidPoint, generateLineStyle } from './Survey.ts';
+	import { slide } from 'svelte/transition';
 
 	interface Props {
 		oid: string;
@@ -23,6 +24,7 @@
 	let featureProps = $state() as FeatureAttrs;
 	let featureError = $state() as Error;
 	let page = $state(0) as number;
+	let reporterlivesnearby = $state() as string;
 
 	let page1Class = $derived(!page || page === 0 ? 'contents' : 'hidden');
 	let page2Class = $derived(page === 1 ? 'contents' : 'hidden');
@@ -90,34 +92,47 @@
 				<Arterial position={midPoint} attrs={featureProps} />
 			{/if}
 			<hr class="my-7" />
-			<h1 class="text-xl"><b>Tell me about you!</b></h1>
-			Do you live in the area? <YesNoNaw name="reporterlivesnearby" />
-			<br />&nbsp;&nbsp;&nbsp;If: no... do you come here often? <YesNoNaw
-				name="reporterfrequents"
+			<h1 class="text-2xl"><b>Tell me about you!</b></h1>
+			<YesNoNaw
+				name="reporterlivesnearby"
+				promptText="Do you live in the area?"
+				bind:value={reporterlivesnearby}
 			/>
-			<br /><br />
+			{#if reporterlivesnearby === 'no'}
+				{#snippet reporterFrequentsPrompt()}
+					<p>Do you know this neighborhood well?</p>
+					<p class="text text-gray-400 px-2">
+						Do you come here often? Will you notice improvements?
+					</p>
+				{/snippet}
+				<div transition:slide>
+					<YesNoNaw name="reporterfrequents" prompt={reporterFrequentsPrompt} />
+				</div>
+			{/if}
 
-			<div class="flex flex-col">
-				<div>
-					<label for="email">Your Email: </label>
-					<input id="email" class="text-black" name="email" type="text" autocomplete="email" />
-				</div>
-				<div>
-					<p>
-						Can I ask you for more details about your report? <YesNoNaw name="reporterfollowup" />
-					</p>
-					<p>
-						What can I contact you about? <Selector
-							name="reportercontact"
-							fields={['This neighborhood', 'Citywide', 'Tell me everything']}
-							unselectedLabel="Never speak to me"
-						/>
-					</p>
-					<p class="text-xs px-2">
-						Keep in mind I have nothing to sell you except a better city to live in
-					</p>
-				</div>
-			</div>
+			<div class="my-5"></div>
+
+			{#snippet emailOptions()}
+				<label for="email" class="block">Email</label>
+				<input
+					id="email"
+					class="text-black w-xl"
+					name="email"
+					type="text"
+					autocomplete="email"
+					placeholder="funkyname@somedomain.com"
+				/>
+				<p class="pt-5">What can I contact you about?</p>
+				<p class="text text-gray-400 px-2">
+					<!-- A note could go here but Idk what to say -->
+				</p>
+			{/snippet}
+			<Selector
+				prompt={emailOptions}
+				name="reportercontact"
+				fields={['Tell me everything', 'Citywide', 'This neighborhood']}
+				unselectedLabel="Never speak to me"
+			/>
 			<br />
 			<input
 				class="block w-full {color[1]} rounded"

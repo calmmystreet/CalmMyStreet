@@ -3,7 +3,7 @@
 
 	import Selector from './Selector.svelte';
 
-	let { ...everythingElseProps }: PresetProps = $props();
+	let { value = $bindable(), ...everythingElseProps }: PresetProps = $props();
 </script>
 
-<Selector fields={['yes', 'no']} {...everythingElseProps} />
+<Selector fields={['yes', 'no']} bind:value {...everythingElseProps} />
