@@ -2,6 +2,7 @@
 	import type { EventHandler } from 'svelte/elements';
 
 	import { color } from '$lib/constants';
+	import { slide } from 'svelte/transition';
 
 	interface Props {
 		id: string;
@@ -10,21 +11,27 @@
 	}
 	let { id, name, suggestions }: Props = $props();
 	var value: string = $state('');
+	var div: HTMLDivElement;
 	var textarea: HTMLTextAreaElement;
 
 	function acceptSuggestion(s: string): EventHandler {
 		return (e) => {
 			e.preventDefault();
 			value = s;
-			textarea.focus();
+			textarea.focus({ preventScroll: true });
 			textarea.setSelectionRange(value.length, value.length);
+			setTimeout(() => {
+				div.scrollIntoView();
+			}, 400);
 		};
 	}
 </script>
 
-<div>
+<div class="bg-black border rounded-md grid py-2 px-3 mt-5" bind:this={div}>
+	<h2 class="text-xl">Describe the problem</h2>
+	<p class="text text-gray-400 px-2">This description will be public on the map!</p>
 	{#if !value}
-		<div class="slideaway">
+		<div class="slideaway" transition:slide>
 			{#each suggestions as s (s)}
 				<div class="w-fit text-left block {color[2]} rounded-2xl p-2 m-1">
 					<button onclick={acceptSuggestion(s)}>{s}...</button>
@@ -32,17 +39,13 @@
 			{/each}
 		</div>
 	{/if}
-	<textarea {id} class="w-full h-20 text-black" {name} bind:this={textarea} bind:value></textarea>
+	<textarea
+		{id}
+		class="rounded w-full h-20 text-black"
+		{name}
+		placeholder="Explain the problem, in your words. Or start with a suggestion from above"
+		maxlength="5000"
+		bind:this={textarea}
+		bind:value
+	></textarea>
 </div>
-
-<style>
-	.slideway {
-		height: fit-content;
-		transition: height 1s;
-	}
-	@starting-style {
-		.slideaway {
-			height: 0;
-		}
-	}
-</style>
