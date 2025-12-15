@@ -261,7 +261,7 @@
 					<p class="text text-gray-400 px-2">This will not be published publicly</p>
 					<textarea
 						id="badusageroute"
-						class="rounded h-20"
+						class="rounded h-20 text-black"
 						name="badusageroute"
 						placeholder="Source? Destination?"
 						maxlength="5000"
@@ -273,7 +273,7 @@
 				<p class="text text-gray-400 px-2">This will not be published publicly</p>
 				<textarea
 					id="solution"
-					class="rounded h-20"
+					class="rounded h-20 text-black"
 					name="solution"
 					placeholder="How might we fix this?"
 					maxlength="5000"
