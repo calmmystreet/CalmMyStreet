@@ -8,9 +8,10 @@
 		id: string;
 		name: string;
 		suggestions: string[];
+		value: string;
+		email: string;
 	}
-	let { id, name, suggestions }: Props = $props();
-	var value: string = $state('');
+	let { id, name, suggestions, value = $bindable(''), email }: Props = $props();
 	var div: HTMLDivElement;
 	var textarea: HTMLTextAreaElement;
 
@@ -24,6 +25,11 @@
 				div.scrollIntoView();
 			}, 400);
 		};
+	}
+
+	function invalid(/*e: Event*/) {
+		// TODO: e.preventDefault();
+		// add message
 	}
 </script>
 
@@ -45,7 +51,9 @@
 		{name}
 		placeholder="Explain the problem, in your words. Or start with a suggestion from above"
 		maxlength="5000"
+		oninvalid={invalid}
 		bind:this={textarea}
 		bind:value
+		required={email === ''}
 	></textarea>
 </div>

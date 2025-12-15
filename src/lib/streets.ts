@@ -24,7 +24,7 @@ export async function getFeature(id: string) {
 	if (visitedStreets.has(id)) {
 		return visitedStreets.get(id)!;
 	}
-	const p = doPromiseQuery((q) => q.featureIds([id])).then((geojson) => {
+	const p = doPromiseQuery((q) => q.where("UNITIDSORT = '" + id + "'")).then((geojson) => {
 		if (geojson.features.length !== 1) {
 			throw new Error(`Feature not found`);
 		}

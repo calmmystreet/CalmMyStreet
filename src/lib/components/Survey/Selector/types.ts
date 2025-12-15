@@ -6,6 +6,7 @@ export interface PresetProps {
 	promptText?: string;
 	unselectedLabel?: string;
 	value?: string;
+	required?: boolean;
 }
 
 export interface Props extends PresetProps {

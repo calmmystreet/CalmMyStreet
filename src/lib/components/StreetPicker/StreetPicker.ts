@@ -128,7 +128,7 @@ function confirmStreets(featureCollection: FeatureCollection) {
 		style: generateLineStyle,
 		onEachFeature: (f, l) => {
 			const attrs = f.properties as unknown as FeatureAttrs;
-			l.bindPopup(createButton(attrs.STNAME_ORD, '/report/?oid=' + attrs.OBJECTID, attrs.color), {
+			l.bindPopup(createButton(attrs.STNAME_ORD, '/report/?uid=' + attrs.UNITIDSORT, attrs.color), {
 				autoClose: false,
 			});
 		},
