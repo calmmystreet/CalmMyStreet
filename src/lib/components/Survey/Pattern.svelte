@@ -1,27 +1,9 @@
 <script lang="ts">
-	import type { Props } from './types';
-
 	import YesNoNaw from './Selector/YesNoNaw.svelte';
-	import PromptingDescription from './PromptingDescription/PromptingDescription.svelte';
 	import { slide } from 'svelte/transition';
-	let props: Props = $props();
+
 	let isPattern = $state('') as string;
 </script>
-
-<input name="type" type="hidden" value="street" />
-
-<PromptingDescription
-	id="description"
-	name="description"
-	suggestions={[
-		`There's cut through traffic from `,
-		`Cars speed down ${props.attrs.STNAME_ORD.toLowerCase()} `,
-		`It's hard to cross ${props.attrs.STNAME_ORD.toLowerCase()} because `,
-		`Cars are parked where it's not safe. They park `,
-	]}
-/>
-
-<div class="py-5"></div>
 
 <YesNoNaw name="pattern" promptText="Is this a common occurence?" bind:value={isPattern} />
 {#if isPattern === 'no'}
@@ -42,14 +24,3 @@
 		</p>
 	</div>
 {/if}
-
-<div class="py-5"></div>
-
-{#snippet liveNearbyPrompt()}
-	<p>Is this local traffic?</p>
-	<p class="text text-gray-400 px-2">
-		Are the vehicles heading to a home or business in this neighorhood?
-	</p>
-{/snippet}
-
-<YesNoNaw name="livenearby" prompt={liveNearbyPrompt} />

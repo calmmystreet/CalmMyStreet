@@ -1,7 +1,15 @@
 <script lang="ts">
 	import type { Props } from './types';
 
-	let { name, prompt, promptText, fields, unselectedLabel, value = $bindable() }: Props = $props();
+	let {
+		name,
+		prompt,
+		promptText,
+		fields,
+		unselectedLabel,
+		value = $bindable(),
+		required,
+	}: Props = $props();
 </script>
 
 <fieldset {name} class="bg-black border rounded-md grid p-1 px-3">
@@ -19,8 +27,10 @@
 			{field}
 		</label>
 	{/each}
-	<label class="unselector flex-auto px-3" for={name + '_'}>
-		<input type="radio" id={name + '_'} {name} value="" class="hidden" bind:group={value} />
-		{unselectedLabel || 'x'}
-	</label>
+	{#if !required}
+		<label class="unselector flex-auto px-3" for={name + '_'}>
+			<input type="radio" id={name + '_'} {name} value="" class="hidden" bind:group={value} />
+			{unselectedLabel || 'x'}
+		</label>
+	{/if}
 </fieldset>

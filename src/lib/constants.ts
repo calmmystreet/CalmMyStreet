@@ -21,7 +21,8 @@ export const esriOptions = {
 	url: 'https://services.arcgis.com/ZOyb2t4B0UYuYNYH/arcgis/rest/services/Seattle_Streets_1/FeatureServer/0',
 	where: "ARTCLASS <= 3 AND PVMTCATEGORY <> 'MLTUSETRL'",
 	fields: [
-		'OBJECTID',
+		'UNITIDSORT',
+		'UNITDESC',
 		'STNAME_ORD',
 		'XSTRHI',
 		'XSTRLO',
@@ -31,11 +32,13 @@ export const esriOptions = {
 		'NGHBRHDGRNWY',
 		'TRANDESCRIPT',
 		'PARKBOULEVARD',
+		'PRIMARYDISTRICTCD',
 	],
 };
 // the interface that goes along with the above filtered fields
 export interface FeatureAttrs {
-	OBJECTID: number;
+	UNITIDSORT: string;
+	UNITDESC: string;
 	STNAME_ORD: string;
 	XSTRHI: string;
 	XSTRLO: string;
@@ -45,5 +48,6 @@ export interface FeatureAttrs {
 	NGHBRHDGRNWY: string;
 	TRANDESCRIPT: string;
 	PARKBOULEVARD: string;
+	PRIMARYDISTRICTCD: string;
 	color: string;
 }
