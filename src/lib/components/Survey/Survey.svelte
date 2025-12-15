@@ -53,7 +53,7 @@
 			interactive: false,
 			style: generateLineStyle,
 			pointToLayer: (_geoJsonPoint, latlng) => {
-				return L.circle(latlng, { radius: 10 });
+				return L.circle(latlng, { radius: 15 });
 			},
 		}).addTo(map);
 
@@ -100,26 +100,28 @@
 	function generateMapPoint(formData: FormData) {
 		const geo = formData.get('geo') as string | null;
 		const desc = formData.get('description') as string;
-		mapLayer
-			.addData(decodePosition(geo))
-			.bindPopup(
-				() => {
-					const div = document.createElement('div');
-					popup = mount(UserReport, {
-						target: div,
-						props: { description: desc },
-					});
-					return div;
-				},
-				{
-					closeOnClick: false,
-					closeOnEscapeKey: false,
-					autoClose: false,
-					closeButton: false,
-				}
-			)
-			.addTo(map)
-			.openPopup();
+		mapLayer.addData(decodePosition(geo));
+		if (desc) {
+			mapLayer
+				.bindPopup(
+					() => {
+						const div = document.createElement('div');
+						popup = mount(UserReport, {
+							target: div,
+							props: { description: desc },
+						});
+						return div;
+					},
+					{
+						closeOnClick: false,
+						closeOnEscapeKey: false,
+						autoClose: false,
+						closeButton: false,
+					}
+				)
+				.addTo(map)
+				.openPopup();
+		}
 	}
 
 	function decodePosition(encodedPosition: string | null): Point {
@@ -247,7 +249,7 @@
 			/>
 		</fieldset>
 		<fieldset id="page2" class={page2Class}>
-			<h2 class="text-2xl text-center">&#127881;Thanks for submitting&#x1F389;</h2>
+			<h2 class="text-2xl max-w-prose text-center">&#127881;Thanks for submitting&#x1F389;</h2>
 
 			<Spacer height="medium" />
 
@@ -261,7 +263,7 @@
 					<p class="text text-gray-400 px-2">This will not be published publicly</p>
 					<textarea
 						id="badusageroute"
-						class="rounded h-20"
+						class="rounded h-20 text-black"
 						name="badusageroute"
 						placeholder="Source? Destination?"
 						maxlength="5000"
@@ -273,7 +275,7 @@
 				<p class="text text-gray-400 px-2">This will not be published publicly</p>
 				<textarea
 					id="solution"
-					class="rounded h-20"
+					class="rounded h-20 text-black"
 					name="solution"
 					placeholder="How might we fix this?"
 					maxlength="5000"

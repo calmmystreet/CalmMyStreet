@@ -26,8 +26,8 @@ export const generateLineStyle: StyleFunction = (f) => {
 	if (f?.geometry.type === 'Point') {
 		return {
 			fill: true,
-			fillColor: '#F6CC4D',
-			color: '#F6CC4D',
+			fillColor: color[3].substring(4, 11),
+			color: color[3].substring(4, 11),
 			fillOpacity: 100,
 			interactive: false,
 		};
