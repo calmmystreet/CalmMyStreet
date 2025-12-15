@@ -250,7 +250,7 @@
 		</fieldset>
 		<fieldset id="page2" class={page2Class}>
 			<h2 class="text-2xl max-w-prose text-center">&#127881;Thanks for submitting&#x1F389;</h2>
-
+      
 			<Spacer height="medium" />
 
 			<p>
