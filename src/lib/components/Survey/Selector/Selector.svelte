@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { slide } from 'svelte/transition';
 	import type { Props } from './types';
 
 	let {
@@ -27,8 +28,8 @@
 			{field}
 		</label>
 	{/each}
-	{#if !required}
-		<label class="unselector flex-auto px-3" for={name + '_'}>
+	{#if !required && value}
+		<label class="unselector flex-auto px-3" transition:slide for={name + '_'}>
 			<input type="radio" id={name + '_'} {name} value="" class="hidden" bind:group={value} />
 			{unselectedLabel || 'x'}
 		</label>
