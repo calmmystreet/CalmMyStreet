@@ -18,6 +18,11 @@ provider "google" {
   region  = "us-west1"
 }
 
+provider "cloudflare" {
+  api_token = var.CLOUDFLARE_API_TOKEN
+  email = var.CLOUDFLARE_EMAIL
+}
+
 terraform {
   backend "gcs" {
     bucket = "calmmystreet-terraform"
