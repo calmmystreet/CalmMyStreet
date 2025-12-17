@@ -18,16 +18,22 @@ provider "google" {
   region  = "us-west1"
 }
 
-provider "cloudflare" {
-  api_token = var.CLOUDFLARE_API_TOKEN
-  email = var.CLOUDFLARE_EMAIL
-}
-
 terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5.14.0"
+    }
+  }
   backend "gcs" {
     bucket = "calmmystreet-terraform"
     prefix = "terraform/state"
   }
+}
+
+provider "cloudflare" {
+  api_token = var.CLOUDFLARE_API_TOKEN
+  email = var.CLOUDFLARE_EMAIL
 }
 
 ### BUCKET ###
