@@ -8,6 +8,16 @@
 	"upload_source_maps": true,
 
 	"preview_urls": true,
+	"routes": [
+		{
+			"custom_domain": true,
+			"pattern": "calmmystreet.com",
+		},
+		{
+			"custom_domain": true,
+			"pattern": "www.calmmystreet.com",
+		},
+	],
 
 	"assets": {
 		"directory": "./build/",
