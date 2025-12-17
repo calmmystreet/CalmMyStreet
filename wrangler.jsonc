@@ -5,6 +5,10 @@
 	"name": "calmmystreet",
 	"main": "./worker/index.ts",
 	"tsconfig": "./worker/tsconfig.json",
+	"upload_source_maps": true,
+
+	"preview_urls": true,
+
 	"assets": {
 		"directory": "./build/",
 		"binding": "ASSETS",
@@ -12,7 +16,7 @@
 		"html_handling": "auto-trailing-slash",
 		"run_worker_first": ["/api/*"],
 	},
-	"upload_source_maps": true,
+
 	"d1_databases": [
 		{
 			"binding": "DB",
@@ -20,7 +24,14 @@
 			"database_name": "calmmystreet-db",
 		},
 	],
+
 	"observability": {
 		"enabled": true,
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 1,
+			"invocation_logs": true,
+			"persist": true,
+		},
 	},
 }
