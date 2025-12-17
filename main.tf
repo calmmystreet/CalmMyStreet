@@ -33,7 +33,7 @@ terraform {
 
 provider "cloudflare" {
   api_token = var.CLOUDFLARE_API_TOKEN
-  email = var.CLOUDFLARE_EMAIL
+  email     = var.CLOUDFLARE_EMAIL
 }
 
 ### BUCKET ###
