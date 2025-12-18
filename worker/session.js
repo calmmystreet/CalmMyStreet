@@ -27,9 +27,9 @@ async function tryDecodeSessionToken(newHeadersObj, jwt, jwtSecret) {
 		algorithms: [ALGORITHM],
 	});
 	// TODO: slap a .catch() on this and log an error and reassign the session token
-	if (payload.aud) {
-		await signAndSetCookie(payload.aud, newHeadersObj, jwtSecret);
-		return payload.aud;
+	if (payload && payload.sub) {
+		await signAndSetCookie(payload.sub, newHeadersObj, jwtSecret);
+		return payload.sub;
 	}
 }
 
