@@ -79,13 +79,13 @@ resource "google_compute_target_http_proxy" "target_http_proxy" {
   url_map = google_compute_url_map.lb_redirect.id
 }
 
-resource "google_compute_target_https_proxy" "target_https_proxy" {
-  name    = "calmmystreet-${var.suffix}-target-proxy"
-  url_map = google_compute_url_map.lb.id
-  ssl_certificates = [
-    google_compute_managed_ssl_certificate.cert.id
-  ]
-}
+#resource "google_compute_target_https_proxy" "target_https_proxy" {
+#  name    = "calmmystreet-${var.suffix}-target-proxy"
+#  url_map = google_compute_url_map.lb.id
+#  ssl_certificates = [
+#    google_compute_managed_ssl_certificate.cert.id
+#  ]
+#}
 
 #resource "google_compute_global_forwarding_rule" "http" {
 #  name                  = "calmmystreet-${var.suffix}-forwarding-rule"
