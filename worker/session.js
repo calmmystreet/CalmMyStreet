@@ -19,10 +19,14 @@ export default async function withSession(request, env) {
 }
 
 async function tryDecodeSessionToken(newHeadersObj, jwt, jwtSecret) {
+	if (!jwt) {
+		return; // no token to parse
+	}
 	const secret = encodeJwtSecret(jwtSecret);
 	const { payload } = await jose.jwtVerify(jwt, secret, {
 		algorithms: [ALGORITHM],
 	});
+	// TODO: slap a .catch() on this and log an error and reassign the session token
 	if (payload.aud) {
 		await signAndSetCookie(payload.aud, newHeadersObj, jwtSecret);
 		return payload.aud;
