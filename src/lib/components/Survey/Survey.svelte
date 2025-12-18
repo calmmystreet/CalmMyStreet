@@ -79,15 +79,13 @@
 	function completeForm(e: SubmitEvent) {
 		e.preventDefault();
 		const formData = new FormData(e.target as HTMLFormElement);
-		formData.entries().forEach((v) => {
-			console.log(v);
-		});
 		if (page === 0) {
 			mapLayer.clearLayers();
 			generateMapPoint(formData);
 		}
 		page++;
 		window.scrollTo({ top: 0 });
+		console.log(fetch('/api/map', { method: 'POST', body: formData }));
 	}
 
 	function goBackToPage0() {
