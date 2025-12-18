@@ -32,6 +32,7 @@
 	let midPoint = $state() as Position;
 	let featureProps = $state() as FeatureAttrs;
 	let featureError = $state() as Error;
+	let formSubmitting = $state(false) as boolean | string | Error;
 	let page = $state(0) as number;
 
 	let description = $state('');
@@ -87,12 +88,23 @@
 			mapLayer.clearLayers();
 			generateMapPoint(formData);
 		}
-		const f = fetch('/api/map', {
+		formSubmitting = 'Submitting...';
+		fetch('/api/map', {
 			method: 'POST',
 			body: JSON.stringify(b),
 			headers: [['Content-Type', 'application/json']],
-		});
-		console.log(f);
+		})
+			.then((resp) => {
+				if (!resp.ok && resp.status !== 303) {
+					throw new Error(
+						`Received status code ${resp.status} when saving the form. Please go back and try again`
+					);
+				}
+				formSubmitting = false;
+			})
+			.catch((err) => {
+				formSubmitting = err;
+			});
 		page++;
 		window.scrollTo({ top: 0 });
 	}
@@ -101,6 +113,7 @@
 		mapLayer.closePopup();
 		mapLayer.clearLayers();
 		addStreetLine();
+		formSubmitting = false;
 		page = 0;
 	}
 
@@ -152,7 +165,7 @@
 <div class="max-w-prose prose-xl text-center">
 	{#if !featureError && !feature}
 		<h1>Loading...</h1>
-	{:else if feature}
+	{:else if feature && !featureError}
 		<h1>Tell me about {featureProps.STNAME_ORD}</h1>
 	{:else}
 		<h1>
@@ -170,7 +183,9 @@
 		>&larr; Edit your report</button
 	>
 {/if}
-{#if feature}
+{#if formSubmitting}
+	{formSubmitting}
+{:else if feature}
 	<form onsubmit={completeForm}>
 		<input name="page" type="hidden" value={page} />
 		<input name="uid" type="hidden" value={uid} />
