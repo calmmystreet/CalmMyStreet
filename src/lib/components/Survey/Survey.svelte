@@ -26,6 +26,7 @@
 	let map: Map;
 	let mapLayer: GeoJSON<LineString, Geometry>;
 	let popup: Record<string, string> | null = null;
+	let formEl: HTMLFormElement;
 
 	// state
 	let feature = $state() as Feature;
@@ -33,6 +34,10 @@
 	let featureProps = $state() as FeatureAttrs;
 	let featureError = $state() as Error;
 	let formSubmitting = $state(false) as boolean | string | Error;
+	// TODO: redefine page 0 as the pre-init page,
+	// page 1 as the main form
+	// page 2 as the additional form
+	// page 3 as the share screen
 	let page = $state(0) as number;
 
 	let description = $state('');
@@ -65,35 +70,41 @@
 				midPoint = findMidPoint(f.geometry);
 				featureProps = f.properties as unknown as FeatureAttrs;
 			})
-			.then(addStreetLine) // adds the line to the map!
+			.then(addStreetLine)
+			.then(doSubmit)
 			.catch((e) => {
 				console.log(`Caught error fetching feature`, e);
 				featureError = e as Error;
 			});
 	};
 
+	// adds the line to the map!
 	function addStreetLine() {
 		mapLayer.addData(feature);
 		map.flyToBounds(mapLayer.getBounds().pad(4));
 	}
 
-	function completeForm(e: SubmitEvent) {
-		e.preventDefault();
-		const formData = new FormData(e.target as HTMLFormElement);
+	async function doSubmit() {
+		const formData = new FormData(formEl);
 		let b = {} as { [key: string]: unknown };
 		formData.forEach((value, key) => {
 			b[key] = value;
 		});
-		if (page === 0) {
-			mapLayer.clearLayers();
-			generateMapPoint(formData);
-		}
-		formSubmitting = 'Submitting...';
-		fetch('/api/map', {
+		return fetch('/api/map', {
 			method: 'POST',
 			body: JSON.stringify(b),
 			headers: [['Content-Type', 'application/json']],
-		})
+		});
+	}
+
+	function completeForm(e: SubmitEvent) {
+		e.preventDefault();
+		if (page === 0) {
+			mapLayer.clearLayers();
+			generateMapPoint();
+		}
+		formSubmitting = 'Submitting...';
+		doSubmit()
 			.then((resp) => {
 				if (!resp.ok && resp.status !== 303) {
 					throw new Error(
@@ -117,7 +128,8 @@
 		page = 0;
 	}
 
-	function generateMapPoint(formData: FormData) {
+	function generateMapPoint() {
+		const formData = new FormData(formEl);
 		const geo = formData.get('geo') as string | null;
 		const desc = formData.get('description') as string;
 		mapLayer.addData(decodePosition(geo));
@@ -186,7 +198,7 @@
 {#if formSubmitting}
 	{formSubmitting}
 {:else if feature}
-	<form onsubmit={completeForm}>
+	<form onsubmit={completeForm} bind:this={formEl}>
 		<input name="page" type="hidden" value={page} />
 		<input name="uid" type="hidden" value={uid} />
 		<input name="uiddesc" type="hidden" value={featureProps.UNITDESC} />

@@ -5,10 +5,7 @@ export default async function handler(request) {
 
 	return json(
 		{
-			session: request.session,
-			content: body,
-			cookies: request.cookies,
-			newCookies: request.newCookies,
+			...body,
 		},
 		{
 			status: 200,
