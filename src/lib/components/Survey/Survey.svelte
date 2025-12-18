@@ -79,15 +79,22 @@
 	function completeForm(e: SubmitEvent) {
 		e.preventDefault();
 		const formData = new FormData(e.target as HTMLFormElement);
+		let b = {} as { [key: string]: unknown };
+		formData.forEach((value, key) => {
+			b[key] = value;
+		});
 		if (page === 0) {
 			mapLayer.clearLayers();
 			generateMapPoint(formData);
 		}
+		const f = fetch('/api/map', {
+			method: 'POST',
+			body: JSON.stringify(b),
+			headers: [['Content-Type', 'application/json']],
+		});
+		console.log(f);
 		page++;
 		window.scrollTo({ top: 0 });
-		const headers = new Headers();
-		headers.append('Content-Type', 'application/x-www-form-urlencoded');
-		console.log(fetch('/api/map', { method: 'POST', body: formData, headers }));
 	}
 
 	function goBackToPage0() {
