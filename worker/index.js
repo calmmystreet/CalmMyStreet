@@ -7,7 +7,7 @@ const router = AutoRouter({
 
 // form submission
 router.post('*', withCookies, withContent, (request, env, ctx) => {
-	return { req: request, env: env, ctx: ctx };
+	return { req: { ...request, proxy: null }, env: env, ctx: ctx };
 });
 
 export default { ...router };
