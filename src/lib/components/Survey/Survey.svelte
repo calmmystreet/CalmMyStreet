@@ -177,7 +177,7 @@
 <div class="max-w-prose prose-xl text-center">
 	{#if !featureError && !feature}
 		<h1>Loading...</h1>
-	{:else if feature && !featureError}
+	{:else if feature}
 		<h1>Tell me about {featureProps.STNAME_ORD}</h1>
 	{:else}
 		<h1>
