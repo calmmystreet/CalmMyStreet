@@ -6,7 +6,7 @@ const router = AutoRouter({
 });
 
 // form submission
-router.post('*', withCookies, withContent, (request, env, ctx) => {
+router.post('/api/map', withCookies, withContent, (request, env, ctx) => {
 	return { req: { ...request, proxy: null }, env: env, ctx: ctx };
 });
 
