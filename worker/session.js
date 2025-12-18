@@ -2,6 +2,7 @@ import * as jose from 'jose';
 
 const COOKIE_NAME = 'calmmystreet_session';
 const TOKEN_DURATION = '2419200'; // 4weeks in seconds
+const ALGORITHM = 'HS256';
 
 export default async function withSession(request, env) {
 	const jwtSecret = env.JWT_SECRET;
@@ -10,24 +11,36 @@ export default async function withSession(request, env) {
 	const sessionToken = cookies[COOKIE_NAME];
 
 	request.newCookies = new Headers();
-	let session = await tryDecodeSessionToken(sessionToken, jwtSecret);
+	let session = await tryDecodeSessionToken(request.newCookies, sessionToken, jwtSecret);
 	if (!session) {
 		session = await generateSessionToken(request.newCookies, jwtSecret);
 	}
 	request.session = session;
 }
 
-async function tryDecodeSessionToken(/*jwt, jwtSecret*/) {
-	return false;
+async function tryDecodeSessionToken(newHeadersObj, jwt, jwtSecret) {
+	const secret = encodeJwtSecret(jwtSecret);
+	const { payload } = await jose.jwtVerify(jwt, secret, {
+		algorithms: [ALGORITHM],
+	});
+	if (payload.aud) {
+		await signAndSetCookie(payload.aud, newHeadersObj, jwtSecret);
+		return payload.aud;
+	}
 }
 
 async function generateSessionToken(newHeadersObj, jwtSecret) {
-	const session = crypto.randomUUID();
-	const secret = new TextEncoder().encode(jwtSecret);
-	const alg = 'HS256';
+	const session = crypto.randomUUID(); // create session
+	await signAndSetCookie(session, newHeadersObj, jwtSecret);
+	return session;
+}
+
+async function signAndSetCookie(session, newHeadersObj, jwtSecret) {
+	// sign session
+	const secret = encodeJwtSecret(jwtSecret);
 
 	const jwt = await new jose.SignJWT()
-		.setProtectedHeader({ alg })
+		.setProtectedHeader({ alg: ALGORITHM })
 		.setIssuedAt()
 		.setSubject(session)
 		.setExpirationTime(`${TOKEN_DURATION}s`)
@@ -37,5 +50,8 @@ async function generateSessionToken(newHeadersObj, jwtSecret) {
 		'Set-Cookie',
 		`${COOKIE_NAME}=${jwt}; Secure; Max-Age: ${TOKEN_DURATION}; Path=/; `
 	);
-	return session;
+}
+
+function encodeJwtSecret(jwtSecret) {
+	return new TextEncoder().encode(jwtSecret);
 }
