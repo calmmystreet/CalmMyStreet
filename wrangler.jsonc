@@ -18,6 +18,11 @@
 		},
 	],
 
+	//
+	// "vars": {
+	// 	"JWT_SECRET": SECRET SETUP IN CLOUDFLARE for symmetric signing of JWT tokens
+	// },
+
 	"assets": {
 		"directory": "./build/",
 		"binding": "ASSETS",
