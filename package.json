@@ -14,7 +14,6 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"cf-typegen": "wrangler types",
 		"cf-check": "tsc && wrangler deploy --dry-run",
 		"deploy": "wrangler deploy"
 	},
@@ -48,5 +47,9 @@
 		"vitest": "^4.0.10",
 		"vitest-browser-svelte": "^2.0.1",
 		"wrangler": "^4.55.0"
+	},
+	"dependencies": {
+		"itty-router": "^5.0.22",
+		"jose": "^6.1.3"
 	}
 }
