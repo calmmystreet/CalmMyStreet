@@ -85,7 +85,9 @@
 		}
 		page++;
 		window.scrollTo({ top: 0 });
-		console.log(fetch('/api/map', { method: 'POST', body: formData }));
+		const headers = new Headers();
+		headers.append('Content-Type', 'application/x-www-form-urlencoded');
+		console.log(fetch('/api/map', { method: 'POST', body: formData, headers }));
 	}
 
 	function goBackToPage0() {

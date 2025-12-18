@@ -4,7 +4,12 @@ export default async function handler(request) {
 	const body = request.content;
 
 	return json(
-		{ session: request.session, content: body, cookies: request.cookies },
+		{
+			session: request.session,
+			content: body,
+			cookies: request.cookies,
+			newCookies: request.newCookies,
+		},
 		{
 			status: 200,
 			headers: request.newCookies,
