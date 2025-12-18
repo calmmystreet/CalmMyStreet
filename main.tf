@@ -79,55 +79,55 @@ resource "google_compute_target_http_proxy" "target_http_proxy" {
   url_map = google_compute_url_map.lb_redirect.id
 }
 
-resource "google_compute_target_https_proxy" "target_https_proxy" {
-  name    = "calmmystreet-${var.suffix}-target-proxy"
-  url_map = google_compute_url_map.lb.id
-  ssl_certificates = [
-    google_compute_managed_ssl_certificate.cert.id
-  ]
-}
+#resource "google_compute_target_https_proxy" "target_https_proxy" {
+#  name    = "calmmystreet-${var.suffix}-target-proxy"
+#  url_map = google_compute_url_map.lb.id
+#  ssl_certificates = [
+#    google_compute_managed_ssl_certificate.cert.id
+#  ]
+#}
 
-resource "google_compute_global_forwarding_rule" "http" {
-  name                  = "calmmystreet-${var.suffix}-forwarding-rule"
-  target                = google_compute_target_http_proxy.target_http_proxy.self_link
-  ip_address            = google_compute_global_address.ip.id
-  port_range            = 80
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-}
+#resource "google_compute_global_forwarding_rule" "http" {
+#  name                  = "calmmystreet-${var.suffix}-forwarding-rule"
+#  target                = google_compute_target_http_proxy.target_http_proxy.self_link
+#  ip_address            = google_compute_global_address.ip.id
+#  port_range            = 80
+#  load_balancing_scheme = "EXTERNAL_MANAGED"
+#}
 
-resource "google_compute_global_forwarding_rule" "https" {
-  name                  = "calmmystreet-${var.suffix}"
-  target                = google_compute_target_https_proxy.target_https_proxy.self_link
-  ip_address            = google_compute_global_address.ip.id
-  port_range            = 443
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-}
+#resource "google_compute_global_forwarding_rule" "https" {
+#  name                  = "calmmystreet-${var.suffix}"
+#  target                = google_compute_target_https_proxy.target_https_proxy.self_link
+#  ip_address            = google_compute_global_address.ip.id
+#  port_range            = 443
+#  load_balancing_scheme = "EXTERNAL_MANAGED"
+#}
 
 ### NETWORKING ###
-resource "google_compute_global_address" "ip" {
-  name       = "calmmystreet-${var.suffix}-ip"
-  ip_version = "IPV4"
-}
+#resource "google_compute_global_address" "ip" {
+#  name       = "calmmystreet-${var.suffix}-ip"
+#  ip_version = "IPV4"
+#}
 
-resource "google_compute_managed_ssl_certificate" "cert" {
-  name = "calmmystreet-${var.suffix}-cert"
-  managed {
-    domains = [var.domain]
-  }
-}
+#resource "google_compute_managed_ssl_certificate" "cert" {
+#  name = "calmmystreet-${var.suffix}-cert"
+#  managed {
+#    domains = [var.domain]
+#  }
+#}
 
-resource "google_dns_record_set" "dns" {
-  managed_zone = var.dnszone
-  name         = "${var.domain}."
-  type         = "A"
-  ttl          = 21600
-  routing_policy {
-    wrr {
-      weight  = 1
-      rrdatas = [google_compute_global_address.ip.address]
-    }
-  }
-}
+#resource "google_dns_record_set" "dns" {
+#  managed_zone = var.dnszone
+#  name         = "${var.domain}."
+#  type         = "A"
+#  ttl          = 21600
+#  routing_policy {
+#    wrr {
+#      weight  = 1
+#      rrdatas = [google_compute_global_address.ip.address]
+#    }
+#  }
+#}
 
 ### BUCKET CONTENT ###
 ## TODO: Swap content_type for a map or something
