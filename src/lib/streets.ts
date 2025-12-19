@@ -1,7 +1,6 @@
 import type { Feature, FeatureCollection } from 'geojson';
 import type { Query } from 'esri-leaflet';
-
-import { esriOptions } from './constants';
+import { esriOptions, type FeatureAttrs } from './constants';
 
 // lazy loaded esri
 let esriPromise: Promise<typeof import('esri-leaflet')>;
@@ -74,8 +73,9 @@ async function doPromiseQuery(filterApplicator: (e: Query) => Query) {
 function visitStreets(geojson: FeatureCollection) {
 	try {
 		geojson.features.forEach((f: Feature) => {
-			if (f.id) {
-				visitedStreets.set(f.id.toString(), f);
+			const key = (f.properties as FeatureAttrs).UNITIDSORT;
+			if (key) {
+				visitedStreets.set(key, f);
 			}
 		});
 	} catch (e) {
