@@ -27,7 +27,7 @@ export function rangeToGeoPrefix(geometry) {
 	const [latS, latL] = ensureOrder(lat1, lat2);
 
 	let hashes; // TODO: heuristic instead of brute force here
-	for (var precision = 8; precision >= 5; precision--) {
+	for (var precision = 7; precision >= 5; precision--) {
 		let phash = geohash.bboxes(latS, longS, latL, longL, precision);
 		if (phash.length <= 100) {
 			hashes = phash;
