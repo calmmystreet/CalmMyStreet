@@ -8,9 +8,13 @@ export default async function handler(request, env) {
 	const dbSession = env.DB.withSession(request.bookmark);
 	const fields = ['uid', 'uiddesc', 'artclass', 'artdesc', 'geo', 'description'];
 
+	let whereClause = '';
 	// parse params
-	const geohashes = rangeToGeoPrefix(queryParams.geometry);
-	let whereClause = 'WHERE ' + geohashes.map((hash) => `geohash LIKE '${hash}%'`).join(' OR ');
+	if (queryParams.geometry) {
+		// TODO: Disable global query maybe
+		const geohashes = rangeToGeoPrefix(queryParams.geometry);
+		whereClause = 'WHERE ' + geohashes.map((hash) => `geohash LIKE '${hash}%'`).join(' OR ');
+	}
 
 	// get data
 	const resultObj = await dbSession
