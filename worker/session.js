@@ -10,50 +10,54 @@ export default async function withSession(request, env) {
 	const cookies = request.cookies;
 	const sessionToken = cookies[COOKIE_NAME];
 
-	request.newCookies = new Headers();
-	let session = await tryDecodeSessionToken(request.newCookies, sessionToken, jwtSecret);
-	if (!session) {
-		session = await generateSessionToken(request.newCookies, jwtSecret);
+	const decoded = await tryDecodeSessionToken(sessionToken, jwtSecret);
+	if (decoded === undefined) {
+		request.session = await generateSession();
+	} else {
+		request.session = decoded.session;
+		request.bookmark = decoded.bookmark;
 	}
-	request.session = session;
+	request.genCookie = (b) => genCookie(b, request.session, jwtSecret);
 }
 
-async function tryDecodeSessionToken(newHeadersObj, jwt, jwtSecret) {
+async function tryDecodeSessionToken(jwt, jwtSecret) {
 	if (!jwt) {
-		return; // no token to parse
+		return undefined; // no token to parse
 	}
 	const secret = encodeJwtSecret(jwtSecret);
 	const { payload } = await jose.jwtVerify(jwt, secret, {
 		algorithms: [ALGORITHM],
 	});
-	// TODO: slap a .catch() on this and log an error and reassign the session token
-	if (payload && payload.sub) {
-		await signAndSetCookie(payload.sub, newHeadersObj, jwtSecret);
-		return payload.sub;
-	}
+	let { sub, bookmark } = payload;
+	return {
+		session: sub,
+		bookmark,
+	};
 }
 
-async function generateSessionToken(newHeadersObj, jwtSecret) {
-	const session = crypto.randomUUID(); // create session
-	await signAndSetCookie(session, newHeadersObj, jwtSecret);
-	return session;
+// create session
+async function generateSession() {
+	return crypto.randomUUID();
 }
 
-async function signAndSetCookie(session, newHeadersObj, jwtSecret) {
+async function genCookie(bookmark, session, jwtSecret) {
 	// sign session
 	const secret = encodeJwtSecret(jwtSecret);
 
-	const jwt = await new jose.SignJWT()
+	const jwt = await new jose.SignJWT({ bookmark: bookmark })
 		.setProtectedHeader({ alg: ALGORITHM })
 		.setIssuedAt()
 		.setSubject(session)
 		.setExpirationTime(`${TOKEN_DURATION}s`)
+		// TODO: Set Expires to something b/c otherwise it's a session token
 		.sign(secret);
 
-	newHeadersObj.append(
+	const headers = new Headers();
+	headers.append(
 		'Set-Cookie',
 		`${COOKIE_NAME}=${jwt}; Secure; Max-Age: ${TOKEN_DURATION}; Path=/; `
 	);
+	return headers;
 }
 
 function encodeJwtSecret(jwtSecret) {

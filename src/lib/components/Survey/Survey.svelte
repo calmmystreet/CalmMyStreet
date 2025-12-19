@@ -227,14 +227,14 @@
 
 				<Spacer height="medium" />
 
-				{#snippet liveNearbyPrompt()}
+				{#snippet localTrafficPrompt()}
 					<p>Is this local traffic?</p>
 					<p class="text text-gray-400 px-2">
 						Are the vehicles heading to a home or business in this neighorhood?
 					</p>
 				{/snippet}
 
-				<YesNoNaw name="livenearby" prompt={liveNearbyPrompt} />
+				<YesNoNaw name="localtraffic" prompt={localTrafficPrompt} />
 			{:else}
 				<p class="my-1">
 					<b>This road is designated for through traffic vehicles</b>. We'd still like to hear your
@@ -257,7 +257,6 @@
 					suggestions={[
 						`It's challenging to cross ${featureProps.STNAME_ORD.toLowerCase()} near ${featureProps.XSTRHI.toLowerCase()} because `,
 						`I feel unsafe walking along ${featureProps.STNAME_ORD.toLowerCase()} between ${featureProps.XSTRHI.toLowerCase()} and ${featureProps.XSTRLO.toLowerCase()} because `,
-						`I don't think ${featureProps.STNAME_ORD.toLocaleLowerCase()} should be an arterial because there's a better route on `,
 						`Cars drive dangerously fast on ${featureProps.STNAME_ORD.toLocaleLowerCase()}, the city should `,
 						`Sidewalks are needed here `,
 						`I don't think ${featureProps.STNAME_ORD.toLocaleLowerCase()} should be an arterial. Cars should go around via `,

@@ -21,6 +21,7 @@
 	//
 	// "vars": {
 	// 	"JWT_SECRET": SECRET SETUP IN CLOUDFLARE for symmetric signing of JWT tokens
+	// generated with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 	// },
 
 	"assets": {
@@ -36,6 +37,8 @@
 			"binding": "DB",
 			"database_id": "de5249ab-021a-4b09-829d-e443889cb178",
 			"database_name": "calmmystreet-db",
+			"migrations_table": "d1_migrations",
+			"migrations_dir": "./migrations",
 		},
 	],
 
