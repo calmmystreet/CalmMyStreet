@@ -36,6 +36,7 @@
 		{
 			"binding": "DB",
 			"database_id": "de5249ab-021a-4b09-829d-e443889cb178",
+			"preview_database_id": "51d9fcf7-9ba8-49b1-a105-2f37be084baf",
 			"database_name": "calmmystreet-db",
 			"migrations_table": "d1_migrations",
 			"migrations_dir": "./migrations",

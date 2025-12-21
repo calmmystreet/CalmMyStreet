@@ -13,12 +13,20 @@ export default async function handler(request, env) {
 	if (queryParams.geometry) {
 		// TODO: Disable global query maybe
 		const geohashes = rangeToGeoPrefix(queryParams.geometry);
-		whereClause = 'WHERE ' + geohashes.map((hash) => `geohash LIKE '${hash}%'`).join(' OR ');
+		whereClause = ' AND ' + geohashes.map((hash) => `geohash LIKE '${hash}%'`).join(' OR ');
 	}
 
 	// get data
 	const resultObj = await dbSession
-		.prepare(`SELECT ${fields.join(', ')} FROM map ${whereClause} LIMIT 100`)
+		.prepare(
+			`
+			SELECT ${fields.join(', ')}
+			FROM map
+			WHERE description IS NOT NULL 
+			AND description <> ''
+			${whereClause} 
+			LIMIT 100`
+		)
 		.run();
 	if (!resultObj.success) {
 		throw new Error('DB read error');
@@ -36,14 +44,25 @@ export default async function handler(request, env) {
 		});
 	}
 
-	let outputResults = {};
-	Object.keys(resultsByUid).forEach((k) => {
-		const b = resultsByUid[k];
-		const someGeo = b[0].geo;
-		outputResults[someGeo] = b;
-	});
+	const geoJSON = {
+		type: 'FeatureCollection',
+		features: Object.keys(resultsByUid).map((k) => {
+			const b = resultsByUid[k];
+			const someGeo = b[0].geo;
+			return {
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: JSON.parse(someGeo),
+				},
+				properties: {
+					reports: b,
+				},
+			};
+		}),
+	};
 
-	return json(outputResults, {
+	return json(geoJSON, {
 		status: 200,
 	});
 }

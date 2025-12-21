@@ -1,16 +1,19 @@
 import { type Props as Map_Props } from '../Map/Map.ts';
 import type { LayerGroup, Marker, Map, StyleFunction } from 'leaflet';
-import type { FeatureCollection, LineString } from 'geojson';
+import type { Point, FeatureCollection, LineString } from 'geojson';
 
 import { color, maxZoom, type FeatureAttrs } from '$lib/constants';
+import { getUserReports } from '$lib/reports';
 
 const initialText = 'Drag or tap to start a report';
 let L: typeof import('leaflet');
 let map: Map;
 let streets: typeof import('$lib/streets');
-let layerGroup: LayerGroup;
+let streetsLayerGroup: LayerGroup;
+let reportsLayerGroup: LayerGroup;
 let centerMarker: Marker | undefined;
 let colorPos = 1;
+let postMovePreLoadTimer: NodeJS.Timeout | undefined;
 
 export const setStreets = (streetClass: typeof import('$lib/streets')) => {
 	streets = streetClass;
@@ -21,7 +24,8 @@ export const setupFn: Map_Props['setup'] = (leaflet, newMap) => {
 	L = leaflet;
 	map = newMap;
 
-	layerGroup = L.layerGroup().addTo(map);
+	streetsLayerGroup = L.layerGroup().addTo(map);
+	reportsLayerGroup = L.layerGroup().addTo(map);
 
 	centerMarker = L.marker(map.getCenter(), {
 		riseOnHover: true,
@@ -64,6 +68,10 @@ export const onMapMove: L.LeafletEventHandlerFn = () => {
 		centerMarker.closePopup(); // this must happen before setLatLng or else it loops on small screens
 		centerMarker.setLatLng(map.getCenter());
 	}
+	if (postMovePreLoadTimer) {
+		clearTimeout(postMovePreLoadTimer);
+		postMovePreLoadTimer = undefined;
+	}
 };
 
 export const onMapMoveEnd: L.LeafletEventHandlerFn = () => {
@@ -77,7 +85,27 @@ export const onMapMoveEnd: L.LeafletEventHandlerFn = () => {
 			})
 			.openPopup();
 	}
+	postMovePreLoadTimer = setTimeout(maybeLoadReports, 1000);
 };
+
+async function maybeLoadReports() {
+	if (map.getZoom() < 15) {
+		return; // skip when zoomed out
+	}
+	const newReports = await getUserReports(map.getBounds());
+	if (!newReports) {
+		return;
+	}
+	// TODO: Filter existing reports
+	const newPoints = L.geoJSON<Point>(newReports, {
+		bubblingMouseEvents: false,
+		style: {},
+		onEachFeature: (f, l) => {
+			l.bindPopup(`Thing`);
+		},
+	});
+	reportsLayerGroup.addLayer(newPoints);
+}
 
 // onclick event for the `Report issue here` button
 function showStreets(e: PointerEvent) {
@@ -114,7 +142,7 @@ function showStreets(e: PointerEvent) {
 // called once the request for street metadata comes back with data
 function confirmStreets(featureCollection: FeatureCollection) {
 	throwIfNoMap();
-	if (!layerGroup) {
+	if (!streetsLayerGroup) {
 		console.error(`failed to show streets due to missing layerGroup`);
 		return;
 	}
@@ -122,7 +150,7 @@ function confirmStreets(featureCollection: FeatureCollection) {
 	centerMarker = undefined;
 
 	// create the buttons and lines and put em on the map then fly to them
-	layerGroup?.clearLayers();
+	streetsLayerGroup?.clearLayers();
 	const layer = L.geoJSON<LineString>(featureCollection, {
 		bubblingMouseEvents: false,
 		style: generateLineStyle,
@@ -134,7 +162,7 @@ function confirmStreets(featureCollection: FeatureCollection) {
 		},
 	});
 	map.flyToBounds(layer.getBounds());
-	layerGroup.addLayer(layer);
+	streetsLayerGroup.addLayer(layer);
 	layer.eachLayer((l) => {
 		l.openPopup();
 	});
