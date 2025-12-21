@@ -15,6 +15,15 @@ let centerMarker: Marker | undefined;
 let colorPos = 1;
 let postMovePreLoadTimer: NodeJS.Timeout | undefined;
 
+interface UserReportProperties {
+	uid: string;
+	uiddesc: string;
+	artclass: string;
+	artdesc: string;
+	geo: string;
+	descriptions: [string];
+}
+
 export const setStreets = (streetClass: typeof import('$lib/streets')) => {
 	streets = streetClass;
 };
@@ -101,7 +110,7 @@ async function maybeLoadReports() {
 		bubblingMouseEvents: false,
 		style: {},
 		onEachFeature: (f, l) => {
-			l.bindPopup(`Thing`);
+			l.bindPopup((f.properties as unknown as UserReportProperties).descriptions.join('<br>'));
 		},
 	});
 	reportsLayerGroup.addLayer(newPoints);

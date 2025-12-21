@@ -34,40 +34,41 @@ export default async function handler(request, env) {
 	let results = resultObj.results;
 
 	// process data
-	let commonAttrs = {};
+	// step 1: Group the data into {UID: [{data w/ that uid}]}
 	let resultsByUid = {};
 	if (results) {
 		results.forEach((r) => {
-			if (!commonAttrs) {
-				commonAttrs = {
-					uid: r.uid,
-					uiddesc: r.uiddesc,
-					artclass: r.artclass,
-					artdesc: r.artdesc,
-					geo: r.geo,
+			if (!resultsByUid[r.uid]) {
+				resultsByUid[r.uid] = {
+					commonAttrs: {
+						uid: r.uid,
+						uiddesc: r.uiddesc,
+						artclass: r.artclass,
+						artdesc: r.artdesc,
+						geo: r.geo,
+					},
+					descriptions: [], // added to by the line below
 				};
 			}
-			if (!resultsByUid[r.uid]) {
-				resultsByUid[r.uid] = [];
-			}
-			resultsByUid[r.uid].push(r.descriptions);
+			resultsByUid[r.uid].descriptions.push(r);
 		});
 	}
 
-	const geoJSON = {
+	let geoJSON = {
 		type: 'FeatureCollection',
 		features: Object.keys(resultsByUid).map((k) => {
 			const b = resultsByUid[k];
-			const someGeo = b[0].geo;
+			const commonAttrs = b.commonAttrs;
+			const descriptions = b.descriptions;
 			return {
 				type: 'Feature',
 				geometry: {
 					type: 'Point',
-					coordinates: JSON.parse(someGeo),
+					coordinates: JSON.parse(commonAttrs.geo),
 				},
 				properties: {
 					...commonAttrs,
-					descriptions: b,
+					descriptions, // array of descriptions
 				},
 			};
 		}),
