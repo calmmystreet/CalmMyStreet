@@ -40,11 +40,11 @@ export default async function handler(request, env) {
 		results.forEach((r) => {
 			if (!commonAttrs) {
 				commonAttrs = {
-					uid: results.uid,
-					uiddesc: results.uiddesc,
-					artclass: results.artclass,
-					artdesc: results.artdesc,
-					geo: results.geo,
+					uid: r.uid,
+					uiddesc: r.uiddesc,
+					artclass: r.artclass,
+					artdesc: r.artdesc,
+					geo: r.geo,
 				};
 			}
 			if (!resultsByUid[r.uid]) {
