@@ -26,7 +26,6 @@
 	let map: Map;
 	let mapLayer: GeoJSON<LineString, Geometry>;
 	let popup: Record<string, string> | null = null;
-	let formEl: HTMLFormElement;
 
 	// state
 	let feature = $state() as Feature;
@@ -34,6 +33,7 @@
 	let featureProps = $state() as FeatureAttrs;
 	let featureError = $state() as Error;
 	let formSubmitting = $state(false) as boolean | string | Error;
+	let formEl: HTMLFormElement | undefined = $state();
 	// TODO: redefine page 0 as the pre-init page,
 	// page 1 as the main form
 	// page 2 as the additional form
@@ -58,9 +58,7 @@
 		mapLayer = L.geoJSON<LineString>(null, {
 			interactive: false,
 			style: generateLineStyle,
-			pointToLayer: (_geoJsonPoint, latlng) => {
-				return L.circle(latlng, { radius: 15 });
-			},
+			pointToLayer: (_geoJsonPoint, latlng) => L.circle(latlng, { radius: 15 }),
 		}).addTo(map);
 
 		streets

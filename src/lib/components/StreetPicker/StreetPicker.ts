@@ -108,10 +108,20 @@ async function maybeLoadReports() {
 	// TODO: Filter existing reports
 	const newPoints = L.geoJSON<Point>(newReports, {
 		bubblingMouseEvents: false,
-		style: {},
-		onEachFeature: (f, l) => {
-			l.bindPopup((f.properties as unknown as UserReportProperties).descriptions.join('<br>'));
+		style: {
+			fill: true,
+			fillColor: color[3].substring(4, 11),
+			color: color[3].substring(4, 11),
+			fillOpacity: 100,
 		},
+		onEachFeature: (f, l) => {
+			const userReport = f.properties as unknown as UserReportProperties;
+			l.bindPopup(
+				userReport.descriptions.join('<br>') +
+					`<br><a href="/report/?uid=${userReport.uid}">Report another issue here</a>`
+			);
+		},
+		pointToLayer: (_geoJsonPoint, latlng) => L.circle(latlng, { radius: 15 }),
 	});
 	reportsLayerGroup.addLayer(newPoints);
 }

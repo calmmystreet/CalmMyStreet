@@ -50,7 +50,7 @@ export default async function handler(request, env) {
 					descriptions: [], // added to by the line below
 				};
 			}
-			resultsByUid[r.uid].descriptions.push(r);
+			resultsByUid[r.uid].descriptions.push(r.description);
 		});
 	}
 
