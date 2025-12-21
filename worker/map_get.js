@@ -34,13 +34,23 @@ export default async function handler(request, env) {
 	let results = resultObj.results;
 
 	// process data
+	let commonAttrs = {};
 	let resultsByUid = {};
 	if (results) {
 		results.forEach((r) => {
+			if (!commonAttrs) {
+				commonAttrs = {
+					uid: results.uid,
+					uiddesc: results.uiddesc,
+					artclass: results.artclass,
+					artdesc: results.artdesc,
+					geo: results.geo,
+				};
+			}
 			if (!resultsByUid[r.uid]) {
 				resultsByUid[r.uid] = [];
 			}
-			resultsByUid[r.uid].push(r);
+			resultsByUid[r.uid].push(r.descriptions);
 		});
 	}
 
@@ -56,7 +66,8 @@ export default async function handler(request, env) {
 					coordinates: JSON.parse(someGeo),
 				},
 				properties: {
-					reports: b,
+					...commonAttrs,
+					descriptions: b,
 				},
 			};
 		}),
