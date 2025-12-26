@@ -1,6 +1,9 @@
 import type { Geometry, Position } from 'geojson';
 import type { StyleFunction } from 'leaflet';
 import { color, type FeatureAttrs } from '$lib/constants';
+import { COOKIE_NAME } from '$lib/constants';
+import Cookies from 'js-cookie';
+import * as jose from 'jose';
 
 // TODO: do this properly
 export function findMidPoint(g: Geometry): Position {
@@ -20,6 +23,18 @@ export function findMidPoint(g: Geometry): Position {
 		default:
 			throw new Error(`Unsupported shape type: ${g.type}`);
 	}
+}
+
+export function decodeJwtCookieForEmail(): string {
+	const cookie = Cookies.get(COOKIE_NAME);
+	if (!cookie) {
+		return '';
+	}
+	const { email } = jose.decodeJwt(cookie);
+	if (typeof email === 'string') {
+		return email;
+	}
+	return '';
 }
 
 export const generateLineStyle: StyleFunction = (f) => {

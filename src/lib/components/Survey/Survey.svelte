@@ -3,7 +3,7 @@
 	import type { Feature, Position, LineString, Geometry, Point } from 'geojson';
 	import { type Props as Map_Props } from '../Map/Map.ts';
 	import { color, type FeatureAttrs } from '$lib/constants';
-	import { findMidPoint, generateLineStyle, share } from './Survey.ts';
+	import { decodeJwtCookieForEmail, findMidPoint, generateLineStyle, share } from './Survey.ts';
 	import LivesNearby from './LivesNearby.svelte';
 	import Spacer from './Spacer.svelte';
 	import Email from './Email.svelte';
@@ -41,7 +41,7 @@
 	let page = $state(0) as number;
 
 	let description = $state('');
-	let email = $state('');
+	let email = $state(decodeJwtCookieForEmail());
 
 	let page1Class = $derived(!page || page === 0 ? 'contents' : 'hidden');
 	let page2Class = $derived(page === 1 ? 'contents' : 'hidden');

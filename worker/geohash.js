@@ -26,7 +26,7 @@ export function rangeToGeoPrefix(geometry) {
 	const [longS, longL] = ensureOrder(long1, long2);
 	const [latS, latL] = ensureOrder(lat1, lat2);
 
-	let hashes; // TODO: heuristic instead of brute force here
+	let hashes = undefined; // TODO: heuristic instead of brute force here
 	for (var precision = 7; precision >= 5; precision--) {
 		let phash = geohash.bboxes(latS, longS, latL, longL, precision);
 		if (phash.length <= 100) {
@@ -34,14 +34,14 @@ export function rangeToGeoPrefix(geometry) {
 			break;
 		}
 	}
-	if (!hashes) {
+	if (hashes === undefined) {
 		throw new Error('geometry covers an area that is too large');
 	}
 	return hashes;
 }
 
 function removeBrackets(inputStr, missingMsg) {
-	if (!inputStr) {
+	if (typeof inputStr !== 'string' || inputStr.length === 0) {
 		throw new Error(missingMsg);
 	}
 	if (inputStr.startsWith('[') && inputStr.endsWith(']')) {
