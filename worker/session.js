@@ -1,6 +1,6 @@
 import * as jose from 'jose';
+import { COOKIE_NAME } from '../src/lib/constants';
 
-const COOKIE_NAME = 'calmmystreet_session';
 const TOKEN_DURATION = '2419200'; // 4weeks in seconds
 const ALGORITHM = 'HS256';
 
@@ -14,10 +14,9 @@ export default async function withSession(request, env) {
 	if (decoded === undefined) {
 		request.session = await generateSession();
 	} else {
-		request.session = decoded.session;
-		request.bookmark = decoded.bookmark;
+		Object.assign(request, decoded);
 	}
-	request.genCookie = (b) => genCookie(b, request.session, jwtSecret);
+	request.genCookie = (payload) => genCookie(payload, request.session, jwtSecret);
 }
 
 async function tryDecodeSessionToken(jwt, jwtSecret) {
@@ -28,10 +27,12 @@ async function tryDecodeSessionToken(jwt, jwtSecret) {
 	const { payload } = await jose.jwtVerify(jwt, secret, {
 		algorithms: [ALGORITHM],
 	});
-	let { sub, bookmark } = payload;
+	let { sub, bookmark, email } = payload;
 	return {
+		// the returns here get added to the request object for future use
 		session: sub,
 		bookmark,
+		email,
 	};
 }
 
@@ -40,11 +41,11 @@ async function generateSession() {
 	return crypto.randomUUID();
 }
 
-async function genCookie(bookmark, session, jwtSecret) {
+async function genCookie(payload, session, jwtSecret) {
 	// sign session
 	const secret = encodeJwtSecret(jwtSecret);
 
-	const jwt = await new jose.SignJWT({ bookmark: bookmark })
+	const jwt = await new jose.SignJWT({ ...payload })
 		.setProtectedHeader({ alg: ALGORITHM })
 		.setIssuedAt()
 		.setSubject(session)

@@ -35,7 +35,9 @@ export default async function handler(request, env) {
 	const geohash = pointToGeoHash(payload.geo);
 
 	const queries = [generateQuery(dbSession, session, geohash, payload)];
-	if (email) {
+	const cookiePayload = {};
+	console.log('Cookie email: ', request.email);
+	if (email !== undefined && email !== null) {
 		queries.push(
 			dbSession
 				.prepare(
@@ -45,10 +47,13 @@ export default async function handler(request, env) {
 				)
 				.bind(session, payload.uid, email)
 		);
+		cookiePayload.email = email;
+	} else if (request.email !== undefined) {
+		cookiePayload.email = request.email; // preserve the email in the cookie if not passed this time
 	}
 	const batchResult = await dbSession.batch(queries);
 	// generate the response!!
-	const headers = await request.genCookie(dbSession.getBookmark());
+	const headers = await request.genCookie({ bookmark: dbSession.getBookmark(), ...cookiePayload });
 	return json(batchResult, {
 		status: 200,
 		headers,
@@ -117,6 +122,7 @@ function validate_string_length(k, s, len) {
 	if (typeof s !== 'string') {
 		throw new Error(`Failed to parse field ${k} as string`);
 	}
+	s = s.trim();
 	if (s.length > len) {
 		throw new Error(`Failed to parse field ${k} as string. Length too long`);
 	}

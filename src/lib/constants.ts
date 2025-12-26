@@ -1,5 +1,7 @@
 import type { LatLngExpression } from 'leaflet';
 
+export const COOKIE_NAME = 'calmmystreet_session';
+
 export const color = [
 	// https://coolors.co/163b7c-30705c-f6cc4d-8c3830-a3c43f-513b2c-e9963e-642c66-1e2939
 	'bg-[#163B7C] text-white',
