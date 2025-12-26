@@ -118,7 +118,12 @@ async function maybeLoadReports() {
 			const userReport = f.properties as unknown as UserReportProperties;
 			l.bindPopup(
 				userReport.descriptions.join('<br>') +
-					`<br><a href="/report/?uid=${userReport.uid}">Report another issue here</a>`
+					`<br><a href="/report/?uid=${userReport.uid}">Report another issue here</a>`,
+				{
+					maxHeight: 500,
+					maxWidth: window.screen.width * 0.8,
+					autoPan: false,
+				}
 			);
 		},
 		pointToLayer: (_geoJsonPoint, latlng) => L.circle(latlng, { radius: 15 }),
