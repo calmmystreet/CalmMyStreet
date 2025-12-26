@@ -13,7 +13,7 @@ export default async function handler(request, env) {
 	if (queryParams.geometry) {
 		// TODO: Disable global query maybe
 		const geohashes = rangeToGeoPrefix(queryParams.geometry);
-		whereClause = ' AND ' + geohashes.map((hash) => `geohash LIKE '${hash}%'`).join(' OR ');
+		whereClause = ' AND (' + geohashes.map((hash) => `geohash LIKE '${hash}%'`).join(' OR ') + ')';
 	}
 
 	// get data

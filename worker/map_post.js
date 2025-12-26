@@ -36,7 +36,6 @@ export default async function handler(request, env) {
 
 	const queries = [generateQuery(dbSession, session, geohash, payload)];
 	const cookiePayload = {};
-	console.log('Cookie email: ', request.email);
 	if (email !== undefined && email !== null) {
 		queries.push(
 			dbSession
@@ -84,7 +83,6 @@ function normalizeBody(requestBody) {
 }
 
 function generateQuery(db, session, geohash, payload) {
-	console.log(payload);
 	let keys = [];
 	let questions = [];
 	let values = [];
