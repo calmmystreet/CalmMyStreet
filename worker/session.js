@@ -1,7 +1,6 @@
 import * as jose from 'jose';
 import { COOKIE_NAME } from '../src/lib/constants';
 
-const TOKEN_DURATION = '2419200'; // 4weeks in seconds
 const ALGORITHM = 'HS256';
 
 export default async function withSession(request, env) {
@@ -41,22 +40,29 @@ async function generateSession() {
 	return crypto.randomUUID();
 }
 
+// get the date cookies and sessions should expire
+function getExpiryDate() {
+	const date = new Date();
+	date.setUTCDate(date.getUTCDate() + 28);
+	return date;
+}
+
 async function genCookie(payload, session, jwtSecret) {
 	// sign session
 	const secret = encodeJwtSecret(jwtSecret);
+	const expiryDate = getExpiryDate();
 
 	const jwt = await new jose.SignJWT({ ...payload })
 		.setProtectedHeader({ alg: ALGORITHM })
 		.setIssuedAt()
 		.setSubject(session)
-		.setExpirationTime(`${TOKEN_DURATION}s`)
-		// TODO: Set Expires to something b/c otherwise it's a session token
+		.setExpirationTime(expiryDate)
 		.sign(secret);
 
 	const headers = new Headers();
 	headers.append(
 		'Set-Cookie',
-		`${COOKIE_NAME}=${jwt}; Secure; Max-Age: ${TOKEN_DURATION}; Path=/; `
+		`${COOKIE_NAME}=${jwt}; Secure; Expires=${expiryDate.toUTCString()}; Path=/; SameSite=Lax`
 	);
 	return headers;
 }
