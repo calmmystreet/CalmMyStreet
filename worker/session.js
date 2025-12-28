@@ -62,7 +62,7 @@ async function genCookie(payload, session, jwtSecret) {
 	const headers = new Headers();
 	headers.append(
 		'Set-Cookie',
-		`${COOKIE_NAME}=${jwt}; Secure; Expires: ${expiryDate.toUTCString()}; Path=/; SameSite=Lax`
+		`${COOKIE_NAME}=${jwt}; Secure; Expires=${expiryDate.toUTCString()}; Path=/; SameSite=Lax`
 	);
 	return headers;
 }
