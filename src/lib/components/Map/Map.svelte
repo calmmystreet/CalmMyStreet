@@ -12,6 +12,10 @@
 	onDestroy(() => {
 		mapLib.onMapDestroy(cleanup);
 	});
+
+	export function requestLocation() {
+		mapLib.requestLocation();
+	}
 </script>
 
 <svelte:head>
