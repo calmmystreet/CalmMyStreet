@@ -243,9 +243,12 @@
 					divide the neighborhoods, and they still have to be safe for people to cross and navigate.
 				</p>
 
-				<!--TODO: add a popup definition for arterial?-->
 				{#snippet dedesignatePrompt()}
-					Do you think this road should continue to be an arterial?
+					<p>Should this street continue to function as a major thoroughfare for vehicles?</p>
+					<p class="text-sm text-gray-400 px-2">
+						Arterials like this are designed to move traffic across the city and connect
+						neighborhoods.
+					</p>
 				{/snippet}
 				<YesNoNaw name="dedesignate" prompt={dedesignatePrompt} />
 
@@ -274,10 +277,11 @@
 			<Spacer height="medium" />
 
 			<input
-				class="block w-full {color[1]} rounded"
+				class="block w-full {color[1]} rounded h-10"
 				type="submit"
 				value="Publish to Map (and continue)"
 			/>
+			<Spacer height="large" />
 		</fieldset>
 		<fieldset id="page2" class={page2Class}>
 			<h2 class="text-2xl max-w-prose text-center">&#127881;Thanks for submitting&#x1F389;</h2>
@@ -291,24 +295,25 @@
 			{#if featureProps.ARTCLASS == 0}
 				<div class="bg-black border rounded-md grid py-2 px-3 mt-5">
 					<h2 class="text-xl">Where are drivers typically coming from and heading to?</h2>
-					<p class="text text-gray-400 px-2">This will not be published publicly</p>
+					<p class="text text-gray-400 px-2">
+						Take a look at a few cars, where do they go? (as far as you can see)
+					</p>
 					<textarea
 						id="badusageroute"
 						class="rounded h-20 text-black"
 						name="badusageroute"
-						placeholder="Source? Destination?"
+						placeholder="This will not be published publicly"
 						maxlength="5000"
 					></textarea>
 				</div>
 			{/if}
 			<div class="bg-black border rounded-md grid py-2 px-3 mt-5">
 				<h2 class="text-xl">How do you think we could change this?</h2>
-				<p class="text text-gray-400 px-2">This will not be published publicly</p>
 				<textarea
 					id="solution"
 					class="rounded h-20 text-black"
 					name="solution"
-					placeholder="How might we fix this?"
+					placeholder="This will not be published publicly"
 					maxlength="5000"
 				></textarea>
 			</div>
@@ -316,23 +321,25 @@
 			<Spacer height="medium" />
 
 			<input
-				class="block w-full {color[1]} rounded"
+				class="block w-full {color[1]} rounded h-10"
 				type="submit"
 				value="Save additional information"
 			/>
+			<Spacer height="large" />
 		</fieldset>
 		<div id="page3" class={page3Class}>
 			<h2 class="text-2xl text-center">Thanks for helping calm your street</h2>
 			<div class="flex w-full">
-				<a class="text-center flex-auto block w-full {color[0]} rounded m-2" href="/"
+				<a class="w-full flex items-center justify-center {color[0]} rounded m-2 h-20" href="/"
 					>Report another issue</a
 				>
 				<button
-					class="text-center flex-auto block w-full {color[0]} rounded m-2"
+					class="text-center flex-auto block w-full {color[0]} rounded m-2 h-20"
 					onclick={share}
 					type="button">Share it with your neighborhood</button
 				>
 			</div>
+			<Spacer height="large" />
 		</div>
 	</form>
 {/if}

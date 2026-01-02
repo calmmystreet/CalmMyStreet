@@ -41,7 +41,7 @@ export default new (class mapLib {
 			this.map.whenReady(() => setup(this.leaflet!, this.map!));
 		}
 		if (handlers) {
-			this.map.on(handlers);
+			this.map.on({ ...handlers, locationfound: this.onLocationFound });
 		}
 	};
 
@@ -61,12 +61,7 @@ export default new (class mapLib {
 		}
 	};
 
-	onLocationError = (e: L.ErrorEvent) => {
-		// TODO: add error message to top of screen
-		alert(e.message);
-	};
-
-	onRequestLocation = () => {
+	requestLocation = () => {
 		if (this.map) {
 			this.map.locate();
 		}

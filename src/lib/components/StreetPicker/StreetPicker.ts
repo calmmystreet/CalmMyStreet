@@ -1,6 +1,7 @@
 import { type Props as Map_Props } from '../Map/Map.ts';
 import type { LayerGroup, Marker, Map, StyleFunction } from 'leaflet';
 import type { Point, FeatureCollection, LineString } from 'geojson';
+import type { HelperState } from './Helper/Helper.ts';
 
 import { color, maxZoom, type FeatureAttrs } from '$lib/constants';
 import { getUserReports } from '$lib/reports';
@@ -14,6 +15,7 @@ let reportsLayerGroup: LayerGroup;
 let centerMarker: Marker | undefined;
 let colorPos = 1;
 let postMovePreLoadTimer: NodeJS.Timeout | undefined;
+let helperSetter: (newHelper: HelperState) => void;
 
 interface UserReportProperties {
 	uid: string;
@@ -28,6 +30,10 @@ export const setStreets = (streetClass: typeof import('$lib/streets')) => {
 	streets = streetClass;
 };
 
+export const setStateHelper = (helperSet: (newHelper: HelperState) => void) => {
+	helperSetter = helperSet;
+};
+
 // runs after the initial map basics are setup and stands up the default state of the picker
 export const setupFn: Map_Props['setup'] = (leaflet, newMap) => {
 	L = leaflet;
@@ -36,6 +42,15 @@ export const setupFn: Map_Props['setup'] = (leaflet, newMap) => {
 	streetsLayerGroup = L.layerGroup().addTo(map);
 	reportsLayerGroup = L.layerGroup().addTo(map);
 
+	addPin();
+	L.control
+		.layers(undefined, { 'User Reports': reportsLayerGroup }, { position: 'bottomleft' })
+		.addTo(map);
+};
+
+export function addPin() {
+	helperSetter('locate');
+	streetsLayerGroup?.clearLayers();
 	centerMarker = L.marker(map.getCenter(), {
 		riseOnHover: true,
 		draggable: true,
@@ -54,7 +69,7 @@ export const setupFn: Map_Props['setup'] = (leaflet, newMap) => {
 		.bindPopup(initialText)
 		.openPopup();
 	centerMarker.on('dragend', onCenterMarkerDrag);
-};
+}
 
 function zoomAndMoveTo(loc: L.LatLng) {
 	throwIfNoMap();
@@ -170,6 +185,7 @@ function confirmStreets(featureCollection: FeatureCollection) {
 		console.error(`failed to show streets due to missing layerGroup`);
 		return;
 	}
+	helperSetter('back');
 	centerMarker?.remove();
 	centerMarker = undefined;
 
