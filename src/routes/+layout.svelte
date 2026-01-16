@@ -30,6 +30,11 @@
 </svelte:head>
 
 <div class="min-h-screen pt-6 {color[0]} flex flex-col justify-center overflow-hidden lg:pt-12">
+	<div class="flex justify-end-safe px-6 w-full md:max-w-3xl md:mx-auto lg:max-w-4xl">
+		<a href="/">Make a Report</a>
+		<span class="mx-2">|</span>
+		<a href="/about">About</a>
+	</div>
 	<div
 		class="w-full px-6 pt-8 pb-4 bg-gray-800 shadow-xl shadow-slate-700/10 ring-black/5 md:max-w-3xl md:mx-auto lg:max-w-4xl lg:pt-16 rounded-t-lg"
 	>
