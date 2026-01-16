@@ -8,7 +8,7 @@
 
 	let { value = $bindable(''), description }: Props = $props();
 
-	let emailOptionsValue = $state('Tell me everything') as string;
+	let emailOptionsValue = $state('everything') as string;
 
 	function invalid(/*e: Event*/) {
 		// TODO: e.preventDefault();
