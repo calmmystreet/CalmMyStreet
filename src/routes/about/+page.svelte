@@ -22,7 +22,7 @@
 	<h2 id="who">Who's behind this?</h2>
 	<p>
 		Hi, I'm Avery (she/her), I'm a local Seattleite living on Capitol Hill. I built calmmystreet.com
-		to make this city better.
+		to make this city better for everybody living here.
 	</p>
 	<p>
 		Made with help and advice from a few local advocacy orgs.
@@ -35,7 +35,7 @@
 		In 2025, I worked with Seattle's City Council to make street safety improvements in my
 		neighborhood. After successfully making these streets safer, I wanted to share that process
 		throughout the city. Our streets are not good as they are, and I want to find the other people
-		who feel that way
+		who feel that way.
 	</p>
 	<div>
 		<div class="float-end w-xs border mx-1">
@@ -62,7 +62,7 @@
 		</p>
 	</div>
 	<h2 id="safer">How do we make streets safer?</h2>
-	<ul class="list-disc">
+	<ol class="list-decimal">
 		<li>Keep cars from using our neighborhood streets as shortcuts</li>
 		<li>Make it easier and safer to cross the street</li>
 		<li>Traffic calming on major thoroughfares</li>
@@ -71,7 +71,7 @@
 			Allow corner stores and similar throughout the city so you can grab what you need without
 			getting in a car
 		</li>
-	</ul>
+	</ol>
 	<p>
 		Seattle has a list of proven strategies to make our streets safer. Check out their list <a
 			class="text-blue-600 underline"
@@ -89,7 +89,8 @@
 	</ul>
 	<h2 id="connect">Get involved</h2>
 	<p>
-		Send an email to <a class="text-blue-600 underline" href="mailto:calmmystreet@gmail.com"
+		Send an email to
+		<a class="text-blue-600 underline" href="mailto:calmmystreet@gmail.com"
 			>calmmystreet@gmail.com</a
 		>
 	</p>

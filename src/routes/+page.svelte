@@ -12,7 +12,7 @@
 	</p>
 	<p>
 		By reporting where roads are unsafe we can come together and make them better! Tap the map below
-		to share your experience and request to make your street <b>calm</b>.
+		to share your experience and document where a <b>calmer</b> street is needed.
 	</p>
 </article>
 <StreetPicker class="h-[80vh]" />
