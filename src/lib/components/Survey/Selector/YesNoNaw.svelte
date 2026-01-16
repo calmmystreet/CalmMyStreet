@@ -6,4 +6,4 @@
 	let { value = $bindable(), ...everythingElseProps }: PresetProps = $props();
 </script>
 
-<Selector fields={['yes', 'no']} bind:value {...everythingElseProps} />
+<Selector fields={{ yes: 'yes', no: 'no' }} bind:value {...everythingElseProps} />

@@ -37,12 +37,12 @@
 <Selector
 	prompt={emailOptions}
 	name="reportercontact"
-	fields={[
-		'Tell me everything',
-		'Update me about calmer streets citywide',
-		'I want to hear about calmer streets in this neighborhood',
-		'Never speak to me again',
-	]}
+	fields={{
+		'Tell me everything': 'everything',
+		'Update me about calmer streets citywide': 'citywide',
+		'I want to hear about calmer streets in this neighborhood': 'neighborhood',
+		'Never speak to me again': 'never',
+	}}
 	bind:value={emailOptionsValue}
 	required
 />

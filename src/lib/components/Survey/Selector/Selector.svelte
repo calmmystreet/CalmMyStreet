@@ -22,9 +22,15 @@
 			{@render prompt?.()}
 		{/if}
 	</div>
-	{#each fields as field (field)}
-		<label for={name + '_' + field} class="flex-auto px-3">
-			<input type="radio" id={name + '_' + field} {name} value={field} bind:group={value} />
+	{#each Object.keys(fields) as field (field)}
+		<label for={name + '_' + fields[field]} class="flex-auto px-3">
+			<input
+				type="radio"
+				id={name + '_' + fields[field]}
+				{name}
+				value={fields[field]}
+				bind:group={value}
+			/>
 			{field}
 		</label>
 	{/each}

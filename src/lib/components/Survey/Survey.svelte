@@ -5,11 +5,11 @@
 	import { color, type FeatureAttrs } from '$lib/constants';
 	import { decodeJwtCookieForEmail, findMidPoint, generateLineStyle, share } from './Survey.ts';
 	import LivesNearby from './LivesNearby.svelte';
-	import Spacer from './Spacer.svelte';
+	import Spacer from '../Spacer.svelte';
 	import Email from './Email.svelte';
 	import Pattern from './Pattern.svelte';
 	import PromptingDescription from './PromptingDescription.svelte';
-	import YesNoNaw from './Selector/YesNoNaw.svelte';
+	import Selector from './Selector/Selector.svelte';
 	import MapComponent from '../Map/Map.svelte';
 	import UserReport from '../UserReport/UserReport.svelte';
 	import { getContext, mount, unmount } from 'svelte';
@@ -232,25 +232,35 @@
 					</p>
 				{/snippet}
 
-				<YesNoNaw name="localtraffic" prompt={localTrafficPrompt} />
+				<Selector
+					name="localtraffic"
+					prompt={localTrafficPrompt}
+					fields={{
+						'Cars are stopping or parking nearby': 'yes',
+						'Cars are passing through this neighborhood': 'no',
+					}}
+				/>
 			{:else}
 				<p class="my-1">
-					<b>This road is designated for through traffic vehicles</b>. We'd still like to hear your
-					thoughts on this road!
+					<b>This road is designated for through traffic</b>.
 				</p>
-				<p class="my-1">
-					Arterials are a necessity for traffic to get around the city. However, they should not
-					divide the neighborhoods, and they still have to be safe for people to cross and navigate.
-				</p>
+				<p class="my-1">But should be navigable by those outside cars too!</p>
 
 				{#snippet dedesignatePrompt()}
-					<p>Should this street continue to function as a major thoroughfare for vehicles?</p>
+					<p>Is this road for connecting between neighborhoods?</p>
 					<p class="text-sm text-gray-400 px-2">
-						Arterials like this are designed to move traffic across the city and connect
-						neighborhoods.
+						Arterials like this move traffic across the city and connect neighborhoods. Is this one
+						of these roads?
 					</p>
 				{/snippet}
-				<YesNoNaw name="dedesignate" prompt={dedesignatePrompt} />
+				<Selector
+					name="dedesignate"
+					prompt={dedesignatePrompt}
+					fields={{
+						'is for connecting between neighborhoods': 'yes',
+						'only used by those going to this area': 'no',
+					}}
+				/>
 
 				<PromptingDescription
 					id="description"
