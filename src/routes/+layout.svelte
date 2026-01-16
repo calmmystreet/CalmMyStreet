@@ -21,11 +21,11 @@
 	<meta property="og:type" content="website" />
 	<meta
 		name="description"
-		content="Our streets are for us. Report non-local traffic on our map to help create a safer, more livable neighborhood for you."
+		content="Our streets are for us. Report unsafe streets on our map to create calmer streets throughout the City of Seattle."
 	/>
 	<meta
 		property="og:description"
-		content="Our streets are for us. Report non-local traffic on our map to help create a safer, more livable neighborhood for you."
+		content="Our streets are for us. Report unsafe streets on our map to create calmer streets throughout the City of Seattle."
 	/>
 </svelte:head>
 
