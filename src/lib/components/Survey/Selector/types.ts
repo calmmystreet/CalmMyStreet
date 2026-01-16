@@ -10,5 +10,5 @@ export interface PresetProps {
 }
 
 export interface Props extends PresetProps {
-	fields: string[];
+	fields: { [key: string]: string };
 }
