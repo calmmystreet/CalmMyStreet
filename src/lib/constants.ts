@@ -14,7 +14,7 @@ export const color = [
 	'bg-[#642C66] text-white',
 	'bg-[#1E2939] text-white',
 ];
-export const tileLayer = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+export const tileLayer = 'https://tile-a.openstreetmap.fr/hot/{z}/{x}/{y}.png';
 export const tileLayerAttribution =
 	'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 export const maxZoom = 18;
