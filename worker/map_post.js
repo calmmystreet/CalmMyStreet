@@ -13,7 +13,7 @@ const NORMAL_BODY_FIELDS = {
 	geo: validate_string,
 	district: validate_string,
 	dedesignate: validate_yn,
-	description: validate_long_string,
+	description: validate_med_string, // limited to fewer chars for visibility
 	pattern: validate_yn,
 	localtraffic: validate_yn,
 	reporterlivesnearby: validate_yn,
@@ -112,8 +112,12 @@ function validate_string(k, s) {
 	return validate_string_length(k, s, 256);
 }
 
+function validate_med_string(k, s) {
+	return validate_string_length(k, s, 300);
+}
+
 function validate_long_string(k, s) {
-	return validate_string_length(k, s, 5000);
+	return validate_string_length(k, s, 1000);
 }
 
 function validate_string_length(k, s, len) {

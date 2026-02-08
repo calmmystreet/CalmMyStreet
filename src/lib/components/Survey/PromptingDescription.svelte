@@ -50,7 +50,7 @@
 		class="rounded w-full h-20 text-black"
 		{name}
 		placeholder="Explain the problem, in your words. Or start with a suggestion from above"
-		maxlength="5000"
+		maxlength="300"
 		oninvalid={invalid}
 		bind:this={textarea}
 		bind:value

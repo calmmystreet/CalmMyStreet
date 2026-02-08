@@ -313,7 +313,7 @@
 						class="rounded h-20 text-black"
 						name="badusageroute"
 						placeholder="This will not be published publicly"
-						maxlength="5000"
+						maxlength="1000"
 					></textarea>
 				</div>
 			{/if}
@@ -324,7 +324,7 @@
 					class="rounded h-20 text-black"
 					name="solution"
 					placeholder="This will not be published publicly"
-					maxlength="5000"
+					maxlength="1000"
 				></textarea>
 			</div>
 
