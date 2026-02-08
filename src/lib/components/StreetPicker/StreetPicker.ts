@@ -109,7 +109,7 @@ export const onMapMoveEnd: L.LeafletEventHandlerFn = () => {
 			})
 			.openPopup();
 	}
-	postMovePreLoadTimer = setTimeout(maybeLoadReports, 1000);
+	postMovePreLoadTimer = setTimeout(maybeLoadReports, 300);
 };
 
 async function maybeLoadReports() {
