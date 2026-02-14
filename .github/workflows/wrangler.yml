@@ -22,6 +22,6 @@ jobs:
     steps:
       - name: wrangler
         run: npx wrangler
-        
+
       - name: list
         run: ls -a
