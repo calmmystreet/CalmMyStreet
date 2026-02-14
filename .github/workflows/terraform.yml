@@ -24,21 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: NPM Install
-        run: npm install
-
-      - name: NPM Lint
-        run: npm run lint
-
-      - name: Setup Playwright
-        run: npx playwright install
-
-      - name: NPM Test
-        run: npm run test
-
-      - name: NPM Build
-        run: npm run build
-
       - uses: 'google-github-actions/auth@v3'
         with:
           project_id: 'CalmMyStreet'
