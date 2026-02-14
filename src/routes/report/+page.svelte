@@ -6,4 +6,4 @@
 	let props: PageProps = $props();
 </script>
 
-<Survey uid={props.data.uid!} />
+<Survey uid={props.data.uid!} showDescription={props.data.showDescription!} />

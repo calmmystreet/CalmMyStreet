@@ -16,9 +16,11 @@
 
 	interface Props {
 		uid: string;
+		showDescription: boolean;
 	}
 	let props: Props = $props();
 	const uid = props.uid;
+	let showDescription = $state(props.showDescription) as boolean;
 
 	// map related variables
 	let L: typeof import('leaflet');
@@ -43,9 +45,9 @@
 	let description = $state('');
 	let email = $state(decodeJwtCookieForEmail());
 
-	let page1Class = $derived(!page || page === 0 ? 'contents' : 'hidden');
-	let page2Class = $derived(page === 1 ? 'contents' : 'hidden');
-	let page3Class = $derived(page === 2 ? 'contents' : 'hidden');
+	let page1Class = $derived(!page || page === 1 ? 'contents' : 'hidden');
+	let page2Class = $derived(page === 2 ? 'contents' : 'hidden');
+	let page3Class = $derived(page === 3 ? 'contents' : 'hidden');
 	const mapSetupFn: Map_Props['setup'] = (leaflet, newMap) => {
 		L = leaflet;
 		map = newMap;
@@ -88,6 +90,11 @@
 		formData.forEach((value, key) => {
 			b[key] = value;
 		});
+		if (page === 0) {
+			// after preparing the request for survey loaded
+			// we bump the page so the next request is distinct
+			page = 1;
+		}
 		return fetch('/api/map', {
 			method: 'POST',
 			body: JSON.stringify(b),
@@ -97,7 +104,8 @@
 
 	function completeForm(e: SubmitEvent) {
 		e.preventDefault();
-		if (page === 0) {
+		if (page === 1) {
+			// after user submits the first page, add UserReport to the map and remove the street line
 			mapLayer.clearLayers();
 			generateMapPoint();
 		}
@@ -118,12 +126,12 @@
 		window.scrollTo({ top: 0 });
 	}
 
-	function goBackToPage0() {
+	function goBackToPage1() {
 		mapLayer.closePopup();
 		mapLayer.clearLayers();
 		addStreetLine();
 		formSubmitting = false;
-		page = 0;
+		page = 1;
 	}
 
 	function generateMapPoint() {
@@ -136,9 +144,9 @@
 				.bindPopup(
 					() => {
 						const div = document.createElement('div');
-						popup = mount(UserReport, {
+						mount(UserReport, {
 							target: div,
-							props: { description: desc },
+							props: { descriptions: [desc] },
 						});
 						return div;
 					},
@@ -170,6 +178,11 @@
 		// let lat = position[1];
 		return JSON.stringify(position);
 	}
+
+	function showHiddenDescription() {
+		showDescription = true;
+		window.scrollTo({ top: 0 });
+	}
 </script>
 
 <div class="max-w-prose prose-xl text-center">
@@ -184,12 +197,12 @@
 	{/if}
 </div>
 <MapComponent inert setup={mapSetupFn} class="h-60"></MapComponent>
-{#if page == 0}
+{#if page <= 1}
 	<a href="/" class="block w-full text-center {color[3]} py-2 rounded-b"
 		>&larr; Pick a different street</a
 	>
 {:else}
-	<button class="block w-full text-center {color[2]} py-2 rounded-b" onclick={goBackToPage0}
+	<button class="block w-full text-center {color[2]} py-2 rounded-b" onclick={goBackToPage1}
 		>&larr; Edit your report</button
 	>
 {/if}
@@ -205,76 +218,80 @@
 		<input name="geo" type="hidden" value={encodePosition(midPoint)} />
 		<input name="district" type="hidden" value={featureProps.PRIMARYDISTRICTCD} />
 		<fieldset id="page1" class={page1Class}>
-			{#if featureProps.ARTCLASS == 0}
-				<PromptingDescription
-					id="description"
-					name="description"
-					suggestions={[
-						`There's cut through traffic from `,
-						`Cars speed down ${featureProps.STNAME_ORD.toLowerCase()} `,
-						`It's hard to cross ${featureProps.STNAME_ORD.toLowerCase()} because `,
-						`Cars are parked where it's not safe. They park `,
-					]}
-					bind:value={description}
-					{email}
-				/>
+			{#if showDescription}
+				{#if featureProps.ARTCLASS == 0}
+					<PromptingDescription
+						id="description"
+						name="description"
+						suggestions={[
+							`There's cut through traffic from `,
+							`Cars speed down ${featureProps.STNAME_ORD.toLowerCase()} `,
+							`It's hard to cross ${featureProps.STNAME_ORD.toLowerCase()} because `,
+							`Cars are parked where it's not safe. They park `,
+						]}
+						bind:value={description}
+						{email}
+					/>
 
-				<Spacer height="medium" />
+					<Spacer height="medium" />
 
-				<Pattern />
+					<Pattern />
 
-				<Spacer height="medium" />
+					<Spacer height="medium" />
 
-				{#snippet localTrafficPrompt()}
-					<p>Is this local traffic?</p>
-					<p class="text text-gray-400 px-2">
-						Are the vehicles heading to a home or business in this neighorhood?
+					{#snippet localTrafficPrompt()}
+						<p>Is this local traffic?</p>
+						<p class="text text-gray-400 px-2">
+							Are the vehicles heading to a home or business in this neighorhood?
+						</p>
+					{/snippet}
+
+					<Selector
+						name="localtraffic"
+						prompt={localTrafficPrompt}
+						fields={{
+							'Cars are stopping or parking nearby': 'yes',
+							'Cars are passing through this neighborhood': 'no',
+						}}
+					/>
+				{:else}
+					<PromptingDescription
+						id="description"
+						name="description"
+						suggestions={[
+							`It's challenging to cross ${featureProps.STNAME_ORD.toLowerCase()} near ${featureProps.XSTRHI.toLowerCase()} because `,
+							`I feel unsafe walking along ${featureProps.STNAME_ORD.toLowerCase()} between ${featureProps.XSTRHI.toLowerCase()} and ${featureProps.XSTRLO.toLowerCase()} because `,
+							`Cars drive dangerously fast on ${featureProps.STNAME_ORD.toLocaleLowerCase()}, the city should `,
+							`Sidewalks are needed here `,
+							`I don't think ${featureProps.STNAME_ORD.toLocaleLowerCase()} should be an arterial. Cars should go around via `,
+						]}
+						bind:value={description}
+						{email}
+					/>
+
+					<Spacer height="medium" />
+
+					<p>
+						<b>This road is designated for through traffic</b>.
 					</p>
-				{/snippet}
+					<p class="my-1">But should be navigable by those outside cars too!</p>
 
-				<Selector
-					name="localtraffic"
-					prompt={localTrafficPrompt}
-					fields={{
-						'Cars are stopping or parking nearby': 'yes',
-						'Cars are passing through this neighborhood': 'no',
-					}}
-				/>
-			{:else}
-				<p class="my-1">
-					<b>This road is designated for through traffic</b>.
-				</p>
-				<p class="my-1">But should be navigable by those outside cars too!</p>
-
-				{#snippet dedesignatePrompt()}
-					<p>Is this road for connecting between neighborhoods?</p>
-					<p class="text-sm text-gray-400 px-2">
-						Arterials like this move traffic across the city and connect neighborhoods. Is this one
-						of these roads?
-					</p>
-				{/snippet}
-				<Selector
-					name="dedesignate"
-					prompt={dedesignatePrompt}
-					fields={{
-						'is for connecting between neighborhoods': 'yes',
-						'only used by those going to this area': 'no',
-					}}
-				/>
-
-				<PromptingDescription
-					id="description"
-					name="description"
-					suggestions={[
-						`It's challenging to cross ${featureProps.STNAME_ORD.toLowerCase()} near ${featureProps.XSTRHI.toLowerCase()} because `,
-						`I feel unsafe walking along ${featureProps.STNAME_ORD.toLowerCase()} between ${featureProps.XSTRHI.toLowerCase()} and ${featureProps.XSTRLO.toLowerCase()} because `,
-						`Cars drive dangerously fast on ${featureProps.STNAME_ORD.toLocaleLowerCase()}, the city should `,
-						`Sidewalks are needed here `,
-						`I don't think ${featureProps.STNAME_ORD.toLocaleLowerCase()} should be an arterial. Cars should go around via `,
-					]}
-					bind:value={description}
-					{email}
-				/>
+					{#snippet dedesignatePrompt()}
+						<p>Is this road for connecting between neighborhoods?</p>
+						<p class="text-sm text-gray-400 px-2">
+							Arterials like this move traffic across the city and connect neighborhoods. Is this
+							one of these roads?
+						</p>
+					{/snippet}
+					<Selector
+						name="dedesignate"
+						prompt={dedesignatePrompt}
+						fields={{
+							'is for connecting between neighborhoods': 'yes',
+							'only used by those going to this area': 'no',
+						}}
+					/>
+				{/if}
 			{/if}
 			<hr class="my-7" />
 			<h2 class="text-2xl"><b>Tell me about you!</b></h2>
@@ -284,6 +301,15 @@
 
 			<Email {description} bind:value={email} />
 
+			{#if !showDescription}
+				<p class="my-1">
+					A description is not required. <button
+						type="button"
+						class="text-blue-600 underline"
+						onclick={showHiddenDescription}>Click here</button
+					> to describe this street's safety issues in your own words.
+				</p>
+			{/if}
 			<Spacer height="medium" />
 
 			<input

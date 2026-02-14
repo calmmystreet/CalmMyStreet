@@ -6,7 +6,16 @@ export default async function handler(request, env) {
 	// TODO: add support for uid query where we tie session into query to find your report for a uid
 	const queryParams = request.query;
 	const dbSession = env.DB.withSession(request.bookmark);
-	const fields = ['uid', 'uiddesc', 'artclass', 'artdesc', 'geo', 'description'];
+	const fields = [
+		'MAX(updated_at) as updated_at',
+		'uid',
+		'uiddesc',
+		'artclass',
+		'artdesc',
+		'geo',
+		'JSON_GROUP_ARRAY(description) FILTER (WHERE description IS NOT NULL) as descriptions',
+		'COUNT(*) as votes',
+	];
 
 	let whereClause = '';
 	// parse params
@@ -22,9 +31,10 @@ export default async function handler(request, env) {
 			`
 			SELECT ${fields.join(', ')}
 			FROM map
-			WHERE description IS NOT NULL 
-			AND description <> ''
-			${whereClause} 
+			WHERE page <> 0
+			${whereClause}
+			GROUP BY uid, uiddesc, artclass, artdesc, geo
+			HAVING COUNT(description) > 0
 			LIMIT 100`
 		)
 		.run();
@@ -34,44 +44,31 @@ export default async function handler(request, env) {
 	let results = resultObj.results;
 
 	// process data
-	// step 1: Group the data into {UID: [{data w/ that uid}]}
-	let resultsByUid = {};
+	let resultFeatures = [];
 	if (results) {
-		results.forEach((r) => {
-			if (!resultsByUid[r.uid]) {
-				resultsByUid[r.uid] = {
-					commonAttrs: {
-						uid: r.uid,
-						uiddesc: r.uiddesc,
-						artclass: r.artclass,
-						artdesc: r.artdesc,
-						geo: r.geo,
-					},
-					descriptions: [], // added to by the line below
-				};
-			}
-			resultsByUid[r.uid].descriptions.push(r.description);
+		resultFeatures = results.map((r) => {
+			return {
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: JSON.parse(r.geo),
+				},
+				properties: {
+					uid: r.uid,
+					uiddesc: r.uiddesc,
+					artclass: r.artclass,
+					artdesc: r.artdesc,
+					updated_at: r.updated_at,
+					descriptions: JSON.parse(r.descriptions), // array of descriptions
+					votes: r.votes,
+				},
+			};
 		});
 	}
 
 	let geoJSON = {
 		type: 'FeatureCollection',
-		features: Object.keys(resultsByUid).map((k) => {
-			const b = resultsByUid[k];
-			const commonAttrs = b.commonAttrs;
-			const descriptions = b.descriptions;
-			return {
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: JSON.parse(commonAttrs.geo),
-				},
-				properties: {
-					...commonAttrs,
-					descriptions, // array of descriptions
-				},
-			};
-		}),
+		features: resultFeatures,
 	};
 
 	return json(geoJSON, {

@@ -5,6 +5,8 @@ import type { HelperState } from './Helper/Helper.ts';
 
 import { color, maxZoom, type FeatureAttrs } from '$lib/constants';
 import { getUserReports } from '$lib/reports';
+import UserReport from '../UserReport/UserReport.svelte';
+import { mount } from 'svelte';
 
 const initialText = 'Drag or tap to start a report';
 let L: typeof import('leaflet');
@@ -24,6 +26,8 @@ interface UserReportProperties {
 	artdesc: string;
 	geo: string;
 	descriptions: [string];
+	updated_at: string;
+	votes: number;
 }
 
 export const setStreets = (streetClass: typeof import('$lib/streets')) => {
@@ -132,11 +136,16 @@ async function maybeLoadReports() {
 		onEachFeature: (f, l) => {
 			const userReport = f.properties as unknown as UserReportProperties;
 			l.bindPopup(
-				userReport.descriptions.join('<br>') +
-					`<br><a href="/report/?uid=${userReport.uid}">Report another issue here</a>`,
+				() => {
+					const div = document.createElement('div');
+					mount(UserReport, {
+						target: div,
+						props: userReport,
+					});
+					return div;
+				},
 				{
 					maxHeight: 500,
-					maxWidth: window.screen.width * 0.8,
 					autoPan: false,
 				}
 			);

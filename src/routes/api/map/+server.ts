@@ -18,7 +18,10 @@ export function GET() {
 					artclass: 0,
 					artdesc: 'Not Designated',
 					geo: '[-122.3357108480335,47.70413101555995]',
-					descriptions: ['Cars speed down wallingford ave n including police cruisers.'],
+					descriptions: [
+						'Cars speed down wallingford ave n including police cruisers.',
+						'And then they just go around the damn place all smelly and dirty and ugly',
+					],
 				},
 			},
 			{

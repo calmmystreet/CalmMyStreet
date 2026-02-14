@@ -4,6 +4,7 @@ export const ssr = false;
 
 export const load: PageLoad = ({ url }) => {
 	const uid = url.searchParams.get('uid');
+	const hideDescription = url.searchParams.get('hidedesc');
 
-	return { uid };
+	return { uid, showDescription: hideDescription == null };
 };

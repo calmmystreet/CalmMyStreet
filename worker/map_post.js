@@ -94,8 +94,8 @@ function generateQuery(db, session, geohash, payload) {
 	return db
 		.prepare(
 			`INSERT INTO 
-		map (session, geohash, ${keys.join(', ')})
-		VALUES (?, ?, ${questions.join(', ')})`
+		map (updated_at, session, geohash, ${keys.join(', ')})
+		VALUES (CURRENT_DATE, ?, ?, ${questions.join(', ')})`
 		)
 		.bind(session, geohash, ...values);
 }
