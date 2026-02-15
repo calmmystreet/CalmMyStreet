@@ -3,6 +3,7 @@ name: 'Wrangler'
 on:
   push:
     branches: ['main']
+  pull_request:
 
 permissions:
   contents: read
@@ -24,12 +25,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          name: svelte-build
+          path: build
 
       - name: Download Built UI
         uses: actions/download-artifact@v5
 
-      - name: wrangler
-        run: npx wrangler
-
       - name: list
         run: ls -a
+
+      - name: wrangler
+        run: npx wrangler versions upload --env preview

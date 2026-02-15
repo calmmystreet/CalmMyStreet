@@ -14,7 +14,7 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"cf-check": "tsc && wrangler deploy --dry-run",
+		"cf-check": "tsc &&npm run build && wrangler deploy --dry-run",
 		"deploy": "wrangler deploy"
 	},
 	"devDependencies": {
