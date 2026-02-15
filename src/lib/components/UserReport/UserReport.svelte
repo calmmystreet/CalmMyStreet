@@ -63,7 +63,7 @@
 				href={p1Link}
 				class="group flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 shadow-sm transition-all bg-white hover:bg-gray-50 hover:border-gray-300"
 			>
-				<span class="text-sm font-bold">+1 this</span>
+				<span class="text-sm font-bold">+1 this spot</span>
 				<span
 					class="bg-gray-100 group-hover:bg-white text-xs font-mono py-0.5 px-1.5 rounded border border-gray-200"
 				>
