@@ -1,39 +1,54 @@
-name: 'Wrangler'
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"compatibility_date": "2025-12-16",
 
-on:
-  push:
-    branches: ['main']
-  pull_request:
+	"name": "calmmystreet",
+	"main": "./worker/index.js",
+	"upload_source_maps": true,
 
-permissions:
-  contents: read
+	"preview_urls": true,
+	"routes": [
+		{
+			"custom_domain": true,
+			"pattern": "calmmystreet.com",
+		},
+		{
+			"custom_domain": true,
+			"pattern": "www.calmmystreet.com",
+		},
+	],
 
-jobs:
-  run-build:
-    uses: ./.github/workflows/svelte.yml
+	//
+	// "vars": {
+	// 	"JWT_SECRET": SECRET SETUP IN CLOUDFLARE for symmetric signing of JWT tokens
+	// generated with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+	// },
 
-  deploy-preview:
-    name: 'deploy-preview'
-    runs-on: ubuntu-latest
+	"assets": {
+		"directory": "./build/",
+		"binding": "ASSETS",
+		"not_found_handling": "404-page",
+		"html_handling": "auto-trailing-slash",
+		"run_worker_first": ["/api/*"],
+	},
 
-    needs: run-build
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "de5249ab-021a-4b09-829d-e443889cb178",
+			"database_name": "calmmystreet-db",
+			"migrations_table": "d1_migrations",
+			"migrations_dir": "./migrations",
+		},
+	],
 
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          name: svelte-build
-          path: build
-
-      - name: Download Built UI
-        uses: actions/download-artifact@v5
-
-      - name: list
-        run: ls -a
-
-      - name: wrangler
-        run: npx wrangler versions upload --env preview
+	"observability": {
+		"enabled": true,
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 1,
+			"invocation_logs": true,
+			"persist": true,
+		},
+	},
+}
