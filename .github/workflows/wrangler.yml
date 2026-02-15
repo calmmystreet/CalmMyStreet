@@ -25,12 +25,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          name: svelte-build
-          path: build
 
       - name: Download Built UI
         uses: actions/download-artifact@v5
+        with:
+          name: svelte-build
+          path: build
 
       - name: list
         run: ls -a
