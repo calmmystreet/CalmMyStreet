@@ -30,6 +30,9 @@ jobs:
           name: svelte-build
           path: build
 
+      - name: NPM Install
+        run: npm install
+
       - name: wrangler
         run: npx wrangler versions upload --env preview
         env:
