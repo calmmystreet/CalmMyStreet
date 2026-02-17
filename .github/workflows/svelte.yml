@@ -1,0 +1,42 @@
+name: 'Svelte'
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build-svelte:
+    name: 'build-svelte'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: NPM Install
+        run: npm install
+
+      - name: NPM Lint
+        run: npm run lint
+
+      - name: Setup Playwright
+        run: npx playwright install
+
+      - name: NPM Test
+        run: npm run test
+
+      - name: NPM Build
+        run: npm run build
+
+      - name: Upload Built UI
+        uses: actions/upload-artifact@v4
+        with:
+          name: svelte-build
+          path: build
+          retention-days: 1
