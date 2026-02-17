@@ -23,6 +23,18 @@
 	// 	"JWT_SECRET": SECRET SETUP IN CLOUDFLARE for symmetric signing of JWT tokens
 	// generated with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 	// },
+	"env": {
+		"preview": {
+			"name": "calmmystreet-preview",
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "calmmystreet-preview",
+					"database_id": "51d9fcf7-9ba8-49b1-a105-2f37be084baf",
+				},
+			],
+		},
+	},
 
 	"assets": {
 		"directory": "./build/",
