@@ -30,7 +30,10 @@ jobs:
           name: svelte-build
           path: build
 
+      - name: NPM Install
+        run: npm install
+
       - name: wrangler
-        run: npx wrangler versions upload --env preview
+        run: npx wrangler versions upload --env preview --tag "${{ github.event.pull_request.number }}" --message "${{ github.event.pull_request.title }}" --preview-alias "${{ github.head_ref }}"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
