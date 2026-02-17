@@ -34,6 +34,9 @@ jobs:
       - name: NPM Install
         run: npm install
 
+      - name: Migrations
+        run: npx wrangler d1 migrations apply calmmystreet-db --remote
+
       - name: wrangler
         run: npx wrangler deploy
         env:

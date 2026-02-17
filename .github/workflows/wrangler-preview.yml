@@ -33,6 +33,9 @@ jobs:
       - name: NPM Install
         run: npm install
 
+      - name: Migrations
+        run: npx wrangler d1 migrations apply calmmystreet-preview --env preview --remote
+
       - name: wrangler
         run: npx wrangler versions upload --env preview --tag "${{ github.event.pull_request.number }}" --message "${{ github.event.pull_request.title }}" --preview-alias "${{ github.head_ref }}"
         env:
