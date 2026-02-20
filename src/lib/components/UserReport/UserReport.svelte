@@ -23,7 +23,7 @@
 
 <div class="min-w-[280px] max-w-m font-sans text-gray-800 p-1">
 	<div class="flex justify-between items-start mb-2 gap-4">
-		<div class="flex flex-col gap-0.5 max-h-30 overflow-y-scroll">
+		<div class="flex flex-col gap-0.5 max-h-60 overflow-y-scroll">
 			{#each descriptions as description, i (i)}
 				<p class="text-sm text-gray-600 my-1!">{description}</p>
 				{#if i < descriptions.length - 1}
