@@ -46,7 +46,6 @@ export const setupFn: Map_Props['setup'] = (leaflet, newMap) => {
 	streetsLayerGroup = L.layerGroup().addTo(map);
 	reportsLayerGroup = L.layerGroup().addTo(map);
 
-	addPin();
 	L.control
 		.layers(undefined, { 'User Reports': reportsLayerGroup }, { position: 'bottomleft' })
 		.addTo(map);

@@ -6,9 +6,9 @@
 	<h1 class="text-pretty">Our streets are for us</h1>
 	<h2>Tell us what you want.</h2>
 	<p>
-		Our communities deserve safe, livable neighborhoods. Children should not be afraid to play in
-		the street, and you shouldn't be afraid to cross it.
-		<u>Streets are for us</u>.
+		We're creating a map of where people feel unsafe.
+		<b>Drop a pin and tell your story of drivers make you feel unsafe on our streets.</b>
+		Our streets shouldn't be unsafe for you or your loved ones to navigate, nor to cross.
 	</p>
 	<p>
 		By reporting where roads are unsafe we can come together and make them better! Tap the map below
