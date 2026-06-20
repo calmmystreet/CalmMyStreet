@@ -17,7 +17,7 @@
 	import { color } from '$lib/constants.ts';
 
 	let { ...everythingElseProps }: Map_Props = $props();
-	let overlayState : boolean = $state(true);
+	let overlayState: boolean = $state(true);
 	let helperState: HelperState = $state('');
 	setStreets(getContext('streets'));
 	setStateHelper((newHelper: HelperState) => {
@@ -28,23 +28,38 @@
 
 <div class="relative">
 	{#if overlayState && mapEl !== undefined}
-	<div class="overlay">
-		<div class="overlay-card flex flex-col bg-gray-900 p-6 rounded-xl text-center shadow-2xl max-w-sm mx-4 border border-gray-700 text-white">
-			<button
-				class={`text-2xl border rounded-lg ${color[1]} hover:bg-green-950 p-1`}
-				onclick={() => {overlayState = false; mapEl.requestLocation(); addPin()}}>Find My Location
-			</button>
-			<p>or <a class="underline" onclick={() => {overlayState = false; addPin()}}>use the map</a></p>
+		<div class="overlay">
+			<div
+				class="overlay-card flex flex-col bg-gray-900 p-6 rounded-xl text-center shadow-2xl max-w-sm mx-4 border border-gray-700 text-white"
+			>
+				<button
+					class={`text-2xl border rounded-lg ${color[1]} hover:bg-green-950 p-1`}
+					onclick={() => {
+						overlayState = false;
+						mapEl.requestLocation();
+						addPin();
+					}}
+					>Find My Location
+				</button>
+				<p>
+					or <a
+						class="underline"
+						onclick={() => {
+							overlayState = false;
+							addPin();
+						}}>use the map</a
+					>
+				</p>
+			</div>
 		</div>
-	</div>
 	{:else}
-	<div class="helper">
-		<div class="helperText rounded-b-xl bg-gray-800 px-3 py-2 text-center">
-			{#if mapEl !== undefined}
-				<Helper state={helperState} onLocateClick={mapEl.requestLocation} onBackClick={addPin} />
-			{/if}
+		<div class="helper">
+			<div class="helperText rounded-b-xl bg-gray-800 px-3 py-2 text-center">
+				{#if mapEl !== undefined}
+					<Helper state={helperState} onLocateClick={mapEl.requestLocation} onBackClick={addPin} />
+				{/if}
+			</div>
 		</div>
-	</div>
 	{/if}
 	<Map
 		setup={setupFn}
@@ -61,17 +76,17 @@
 
 <style>
 	.overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.75);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-    }
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.75);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 2000;
+	}
 	.helper {
 		position: absolute;
 		top: 0;
