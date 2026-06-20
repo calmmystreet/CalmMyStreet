@@ -33,6 +33,7 @@
 				class="overlay-card flex flex-col bg-gray-900 p-6 rounded-xl text-center shadow-2xl max-w-sm mx-4 border border-gray-700 text-white"
 			>
 				<button
+					type="button"
 					class={`text-2xl border rounded-lg ${color[1]} hover:bg-green-950 p-1`}
 					onclick={() => {
 						overlayState = false;
@@ -42,12 +43,13 @@
 					>Find My Location
 				</button>
 				<p>
-					or <a
+					or <button
+						type="button"
 						class="underline"
 						onclick={() => {
 							overlayState = false;
 							addPin();
-						}}>use the map</a
+						}}>use the map</button
 					>
 				</p>
 			</div>
