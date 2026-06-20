@@ -8,7 +8,7 @@
 	<p>
 		We're creating a map of where people feel unsafe.
 		<b>Drop a pin and tell your story of drivers making you feel unsafe on our streets.</b>
-		Our streets shouldn't be unsafe for you or your loved ones to navigate, nor to cross.
+		Our streets shouldn't be unsafe for you or your loved ones to navigate or cross.
 	</p>
 	<p>
 		By reporting where roads are unsafe we can come together and make them better! Tap the map below
